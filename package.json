@@ -4,6 +4,7 @@
   "description": "",
   "main": "loraWebIndex.js",
   "dependencies": {
+    "async": "^2.6.1",
     "body-parser": "^1.15.1",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
