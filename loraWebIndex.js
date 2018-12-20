@@ -41,7 +41,7 @@ var retreiveExecution = function (containerName, loraStatusArray, callBackRespon
             var creationTime = contentInstance['ct'];
             console.log(containerName + " : " + creationTime);
 
-            var loraSensorName = "loraSensor" + containerName;
+            var loraSensorName = containerName;
 
             var tempJSONObject = new Object();
             tempJSONObject.deviceName = loraSensorName;

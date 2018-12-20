@@ -63,41 +63,29 @@
 
                 <h2> LoRa sensors status </h2>
 
-                <table class="table">
+                <table id="loraSensorsTable" class="table">
                     <thead class="black white-text">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"> Device ID </th>
+                            <th scope="col"> Device CreationTime </th>
+                        </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <th scope=".col-4">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope=".col-4">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope=".col-4">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- jQuery CDN - Slim version (=without AJAX) -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+            <div class="modal-header">
+                <h1>Processing...</h1>
+            </div>
+            <div class="modal-body">
+                <div class="progress progress-striped active">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Popper.JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
         <!-- Bootstrap JS -->
@@ -110,10 +98,74 @@
                 $("#sidebar").mCustomScrollbar({
                     theme: "minimal"
                 });
+
                 $('#sidebarCollapse').on('click', function () {
                     $('#sidebar, #content').toggleClass('active');
                     $('.collapse.in').toggleClass('in');
                     $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+                });
+
+                var myApp;
+                myApp = myApp || (function () {
+                    var pleaseWaitDiv = $('<div class="modal hide" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-header"><h1>Processing...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div></div></div>');
+                    return {
+                        showPleaseWait: function() {
+                            pleaseWaitDiv.modal();
+                        },
+                        hidePleaseWait: function () {
+                            pleaseWaitDiv.modal('hide');
+                        },
+                    };
+                })();
+
+                myApp.showPleaseWait();
+
+                $.ajax({
+                    url: 'http://localhost:62590/localLoraSensorsCollector',
+                    type: "get",
+                    cache: false,
+                    timeout: 30000,
+                    contentType: "application/json",
+                    success: function (data) {
+                        var loraSensorsList = data['loraSensorsList'];
+
+                        for(var i = 0; i < loraSensorsList.length; i++) {
+
+                            var deviceId = loraSensorsList[i].deviceName;
+                            var deviceCreationTime = loraSensorsList[i].creationTime;
+
+                            var deviceElement = $("<tr>")
+
+                            // device number
+                            var deviceNumberTD = $('<td>');
+                            deviceNumberTD.attr({
+                                "class":"col-xs-1"
+                            });
+                            deviceNumberTD.html(i + 1);
+
+                            // device ID
+                            var deviceIdTD = $('<td>');
+                            deviceIdTD.attr({
+                                "class": "col-xs-4"
+                            });
+                            deviceIdTD.html(deviceId);
+
+                            // device creation time
+                            var deviceCreationTimeTD = $('<td>');
+                            deviceCreationTimeTD.attr({
+                                "class": "col-xs-4"
+                            });
+                            deviceCreationTimeTD.html(deviceCreationTime);
+
+                            deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
+                            var paramListRoot = $('#loraSensorsTable');
+                            paramListRoot.append(deviceElement);
+
+                            myApp.hidePleaseWait();
+                        }
+                    }, error: function (xhr, textStatus, errorThrown) {
+                        alert(textStatus + ' : ' + errorThrown);
+                    }
                 });
             });
         </script>
