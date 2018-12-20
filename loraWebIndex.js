@@ -18,6 +18,7 @@ loraWebIndex.use(express.static('bootstrap'));
 loraWebIndex.use(express.static('pages'));
 loraWebIndex.use(express.static('scripts'));
 loraWebIndex.use(express.static('styles'));
+loraWebIndex.use(express.static('images'));
 
 var requestToAnotherServer = require('request');
 

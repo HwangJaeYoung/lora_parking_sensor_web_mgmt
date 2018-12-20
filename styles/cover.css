@@ -28,6 +28,11 @@ html,
 body {
   height: 100%;
   background-color: #333;
+  background-image: url("cover_image.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 body {
