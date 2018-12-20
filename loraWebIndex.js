@@ -21,10 +21,9 @@ loraWebIndex.use(express.static('styles'));
 
 var requestToAnotherServer = require('request');
 
-var retreiveExecution = function (containerName, callBackResponse) {
+var retreiveExecution = function (containerName, loraStatusArray, callBackResponse) {
 
     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
-    console.log(targetURL);
 
     requestToAnotherServer({
         url: targetURL,
@@ -41,6 +40,14 @@ var retreiveExecution = function (containerName, callBackResponse) {
             var contentInstance = root['m2m:cin'];
             var creationTime = contentInstance['ct'];
             console.log(containerName + " : " + creationTime);
+
+            var loraSensorName = "loraSensor" + containerName;
+
+            var tempJSONObject = new Object();
+            tempJSONObject.deviceName = loraSensorName;
+            tempJSONObject.creationTime = creationTime;
+            loraStatusArray.push(tempJSONObject);
+
             callBackResponse(oneM2MResponse.statusCode);
         }
     });
@@ -49,36 +56,42 @@ var retreiveExecution = function (containerName, callBackResponse) {
 
 // Server testing code
 loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
-    console.log("in ajax function")
 
-    for(var i = 1; i < 136; i++) {
+    var loraStatusArray = new Array();
+    var iterationCount = 1;
 
-        async.waterfall([
-            function() {
+    async.whilst(
+        function() {
+            return iterationCount < 136
+        },
 
-                var containerName;
+        function (async_for_loop_callback) {
+            var containerName;
 
-                if(i < 10) {
-                    containerName = "KETI00" + i;
-                } else if (i < 100) {
-                    containerName = "KETI0" + i;
-                } else {
-                    containerName = "KETI" + i;
-                }
-
-                retreiveExecution(containerName, function (statusCode) {
-                    if(statusCode == 200) {
-                        return;
-                    }
-                });
-            },
-        ], function (statusCode, result) {
-            if(statusCode) {
+            if(iterationCount < 10) {
+                containerName = "KETI00" + iterationCount;
+            } else if (iterationCount < 100) {
+                containerName = "KETI0" + iterationCount;
+            } else {
+                containerName = "KETI" + iterationCount;
             }
-        }); // End of async.waterfall
-    }
 
-    response.send('<h1>'+ 'Context-Aware auxiliary component' + '</h1>');
+            retreiveExecution(containerName, loraStatusArray, function (statusCode) {
+                if(statusCode == 200) {
+                    iterationCount++;
+                    async_for_loop_callback (null, iterationCount);
+                } else {
+                    console.log("This condition is going to be covered later");
+                }
+            });
+        },
+
+        function (err, n) {
+            var loraSensorJSONObject = new Object();
+            loraSensorJSONObject.loraSensorsList = loraStatusArray;
+            response.status(200).send(loraSensorJSONObject);
+        }
+    );
 });
 
 

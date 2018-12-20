@@ -11,7 +11,7 @@
         <!-- Bootstrap CSS CDN -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
         <!-- Our Custom CSS -->
-        <link rel="stylesheet" href="styleMgmgPage.css">
+        <link rel="stylesheet" href="styleMgmtPage.css">
         <!-- Scrollbar Custom CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
@@ -23,89 +23,7 @@
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"/>
         <!--<script src="jquery-3.0.0.min.js"></script>-->
 
-        <script type="text/javascript">
-
-            $(document).ready(function(){
-                alert("ad")
-                $.ajax({
-                    url: 'http:/localhost:62590/localLoraSensorsCollector',
-                    type: "get",
-                    dataType: "json",
-                    cache: false,
-                    contentType: "application/json",
-
-                    success: function (data) {
-                        detailInformation = data['result'];
-
-                        var resultString = detailInformation;
-
-                        for(var i = 0; i < testcaseList.length; i++) {
-                            var searchSting = "Test case " + testcaseList[i].testcase + " finished. Verdict: ";
-                            var verdictString = resultString.search(searchSting);
-                            var verdict = resultString[verdictString + searchSting.length]
-                            verdictList.push(verdict);
-                        }
-
-                        for(var i = 0; i < verdictList.length; i++) {
-
-                            var verdictElement = $("<tr>")
-
-                            // testcase number
-                            var verdictNumberTD = $('<td>');
-                            verdictNumberTD.attr({
-                                "class":"col-xs-1"
-                            });
-                            verdictNumberTD.html(i + 1);
-
-                            // testprofile
-                            var verdict_profileTD = $('<td>');
-                            verdict_profileTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            verdict_profileTD.html(testcaseList[i].testprofile);
-
-                            // testcase
-                            var verdict_testcaseTD = $('<td>');
-                            verdict_testcaseTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            verdict_testcaseTD.html(testcaseList[i].testcase);
-
-                            // test result
-                            var testcase_verdict = $('<td>');
-                            testcase_verdict.attr({
-                                "class": "col-xs-3"
-                            });
-
-                            if(verdictList[i] == 'p') {
-                                verdictElement.attr({
-                                    "class":"success"
-                                });
-                                testcase_verdict.html('Pass');
-
-                            } else if(verdictList[i] == 'f') {
-                                verdictElement.attr({
-                                    "class":"danger"
-                                });
-                                testcase_verdict.html('Fail');
-
-                            }  else if(verdictList[i] == 'i') {
-                                verdictElement.attr({
-                                    "class":"info"
-                                });
-                                testcase_verdict.html('Inconclusive');
-                            }
-
-                            verdictElement.append(verdictNumberTD).append(verdict_profileTD).append(verdict_testcaseTD).append(testcase_verdict);
-                            var paramListRoot = $('#resultTable');
-                            paramListRoot.append(verdictElement);
-                        }
-                    }, error: function (xhr, textStatus, errorThrown) {
-                        alert(textStatus + ' : ' + errorThrown);
-                    }
-                });
-            });
-        </script>
+        <script type="text/javascript"></script>
     </head>
 
     <body>
@@ -192,7 +110,6 @@
                 $("#sidebar").mCustomScrollbar({
                     theme: "minimal"
                 });
-
                 $('#sidebarCollapse').on('click', function () {
                     $('#sidebar, #content').toggleClass('active');
                     $('.collapse.in').toggleClass('in');
