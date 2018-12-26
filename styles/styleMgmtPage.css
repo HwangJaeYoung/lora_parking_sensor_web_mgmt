@@ -176,3 +176,10 @@ a.article, a.article:hover {
         display: none;
     }
 }
+
+/* ---------------------------------------------------
+    CUSTOM CSS DEFINITION
+----------------------------------------------------- */
+.btn-space {
+    margin-right: 5px;
+}

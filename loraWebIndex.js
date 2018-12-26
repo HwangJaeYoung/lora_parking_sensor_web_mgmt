@@ -15,6 +15,7 @@ loraWebIndex.use(bodyParser.json());
 loraWebIndex.use(bodyParser.urlencoded({extended: false}));
 loraWebIndex.use(express.static('ajax'));
 loraWebIndex.use(express.static('bootstrap'));
+loraWebIndex.use(express.static('bootstrap_cover'));
 loraWebIndex.use(express.static('pages'));
 loraWebIndex.use(express.static('scripts'));
 loraWebIndex.use(express.static('styles'));
@@ -54,7 +55,6 @@ var retreiveExecution = function (containerName, loraStatusArray, callBackRespon
     });
 };
 
-
 // Server testing code
 loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
 
@@ -63,7 +63,7 @@ loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
 
     async.whilst(
         function() {
-            return iterationCount < 136
+            return iterationCount < 136 //136
         },
 
         function (async_for_loop_callback) {
