@@ -183,3 +183,36 @@ a.article, a.article:hover {
 .btn-space {
     margin-right: 5px;
 }
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #ffffff;
+    color: #000000;
+    text-align: center;
+}
+
+ul.side_list li {
+    padding: 7px 7px 7px 7px;
+    margin-bottom: 2px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-bottom: 1px solid #efefef;
+    font-size: 15px;
+}
+
+.logo_image {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.logo_image_div {
+    position: fixed;
+    bottom: 77px;
+}
+
+.sync_city_image {
+    margin-bottom: 5px;
+}

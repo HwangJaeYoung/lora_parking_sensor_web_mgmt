@@ -162,15 +162,16 @@
         <div class="wrapper">
             <!-- Sidebar  -->
             <nav id="sidebar">
-                <div class="sidebar-header">
-                    <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
-                </div>
 
-                <ul class="side_list list-unstyled components">
-                    <li>
+                <div style="height:60px;width:220px">
+                    <img src="keti.ai" class="w3-round logo-image" style="width:100%; height:100%">
+                </div>​
+
+                <ul class="list-unstyled components">
+                    <li >
                         <a href="http://localhost:62590/loraWebHome">Home</a>
                     </li>
-                    <li>
+                    <li class="border-top">
                         <a href="loraSensorsMgmt.html">Sensors</a>
                     </li>
                     <li>
@@ -180,17 +181,9 @@
                         <a href="loraIPEsMgmt.html">PoC Architecture</a>
                     </li>
                     <li>
-                        <a href="loraIPEsMgmt.html">About</a>
-                    </li>
-                    <li>
-                        <a href="loraWebContactUS.html">Contact US</a>
+                        <a href="loraWebContactUS.html">Contact Us</a>
                     </li>
                 </ul>
-
-                <div class="logo_image_div" style="height:60px;width:240px">
-                    <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
-                    <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
-                </div>
             </nav>
 
             <!-- Page Content  -->
@@ -203,17 +196,17 @@
                                 <span> Toggle Sidebar </span>
                             </button>
 
-                            <button type="button" id="getLoRaStatus" class="btn btn-success btn-space">
-                                <span> LoRa Status </span>
+                            <button type="button" id="getKerLinkIPE" class="btn btn-success btn-space">
+                                <span> KerLinkIPE Status </span>
                             </button>
 
-                            <button type="button" id="getLoRaInfo" class="btn btn-warning btn-space">
-                                <span> LoRa Info </span>
+                            <button type="button" id="getTTLIPE" class="btn btn-warning btn-space">
+                                <span> TTLIPE Status </span>
                             </button>
                         </div>
                     </nav>
 
-                    <h2> LoRa sensors status </h2>
+                    <h2> IPEs connection check </h2>
 
                     <div class="table-wrapper-scroll-y">
                         <table id="loraSensorsTable" class="table table table-bordered table-striped">
