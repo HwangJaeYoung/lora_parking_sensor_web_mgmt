@@ -9,6 +9,8 @@ var async = require('async');
 var express = require('express');
 var bodyParser = require('body-parser');
 var requestToServer = require('request');
+var nodemailer = require('nodemailer');
+require('dotenv').config();
 
 var loraWebIndex = express();
 loraWebIndex.use(bodyParser.json());
@@ -95,6 +97,31 @@ loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
     );
 });
 
+loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
+    console.log("inininin")
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_ID,
+            pass: process.env.EMAIL_PWD
+        }
+    });
+
+    var mailOptions = {
+        from: 'forest62590@gmail.com',
+        to: 'forest62590@naver.com',
+        subject: 'Sending Email using Node.js',
+        html: '<h1>Welcome</h1><p>That was easy!</p>'
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+});
 
 // Connecting the oneM2M Web Tester page.
 loraWebIndex.get('/loraWebHome', function (request, response) {

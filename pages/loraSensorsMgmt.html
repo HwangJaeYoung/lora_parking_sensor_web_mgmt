@@ -116,7 +116,7 @@
                     success: function (data) {
                         var loraSensorsList = data['loraSensorsList'];
 
-                        for(var i = 0; i < loraSensorsList.length; i++) {
+                        for (var i = 0; i < loraSensorsList.length; i++) {
 
                             var deviceId = loraSensorsList[i].deviceName;
                             var deviceCreationTime = loraSensorsList[i].creationTime;
@@ -126,7 +126,7 @@
                             // device number
                             var deviceNumberTD = $('<td>');
                             deviceNumberTD.attr({
-                                "class":"col-xs-1"
+                                "class": "col-xs-1"
                             });
                             deviceNumberTD.html(i + 1);
 
@@ -150,6 +150,23 @@
 
                             waitingDialog.hide();
                         }
+                    }, error: function (xhr, textStatus, errorThrown) {
+                        alert(textStatus + ' : ' + errorThrown);
+                    }
+                });
+            });
+
+            $(document).on('click', '#getLoRaInfo', function () {
+                console.log("clicked email button");
+
+                $.ajax({
+                    url: 'http://localhost:62590/loraEmailSendingTest',
+                    type: "get",
+                    cache: false,
+                    timeout: 30000,
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log("E-mail sending test");
                     }, error: function (xhr, textStatus, errorThrown) {
                         alert(textStatus + ' : ' + errorThrown);
                     }

@@ -63,3 +63,7 @@ typings/
 # file: ~/.gitignore_global
 .DS_Store
 .idea
+   
+# dotenv environment variables file
+.env
+.env.test
