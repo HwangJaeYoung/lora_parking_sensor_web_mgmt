@@ -25,7 +25,7 @@ loraWebIndex.use(express.static('images'));
 
 var requestToAnotherServer = require('request');
 
-var retreiveExecution = function (containerName, loraStatusArray, callBackResponse) {
+var retreiveExecutionForStatus = function (containerName, loraStatusArray, callBackResponse) {
 
     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
 
@@ -57,8 +57,41 @@ var retreiveExecution = function (containerName, loraStatusArray, callBackRespon
     });
 };
 
-// Server testing code
-loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
+var retreiveExecutionForInfo = function (containerName, loraStatusArray, callBackResponse) {
+
+    var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
+
+    requestToAnotherServer({
+        url: targetURL,
+        method: 'GET',
+        json: true,
+        headers: { // Basic AE resource structure for registration
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'Origin',
+        }
+    }, function (error, oneM2MResponse, body) {
+        if(typeof(oneM2MResponse) !== 'undefined') {
+            var root = oneM2MResponse.body;
+            var contentInstance = root['m2m:cin'];
+            var creationTime = contentInstance['ct'];
+            console.log(containerName + " : " + creationTime);
+
+            var loraSensorName = containerName;
+
+            var tempJSONObject = new Object();
+            tempJSONObject.deviceName = loraSensorName;
+            tempJSONObject.creationTime = creationTime;
+            loraStatusArray.push(tempJSONObject);
+
+            callBackResponse(oneM2MResponse.statusCode);
+        }
+    });
+};
+
+
+// Collecting the LoRa Sensors status
+loraWebIndex.get('/localLoraSensorsStatusCollector', function (request, response) {
 
     var loraStatusArray = new Array();
     var iterationCount = 1;
@@ -79,7 +112,47 @@ loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
                 containerName = "KETI" + iterationCount;
             }
 
-            retreiveExecution(containerName, loraStatusArray, function (statusCode) {
+            retreiveExecutionForStatus(containerName, loraStatusArray, function (statusCode) {
+                if(statusCode == 200) {
+                    iterationCount++;
+                    async_for_loop_callback (null, iterationCount);
+                } else {
+                    console.log("This condition is going to be covered later");
+                }
+            });
+        },
+
+        function (err, n) {
+            var loraSensorJSONObject = new Object();
+            loraSensorJSONObject.loraSensorsList = loraStatusArray;
+            response.status(200).send(loraSensorJSONObject);
+        }
+    );
+});
+
+// Collecting the LoRa Sensors info
+loraWebIndex.get('/localLoraSensorsInfoCollector', function (request, response) {
+
+    var loraStatusArray = new Array();
+    var iterationCount = 1;
+
+    async.whilst(
+        function() {
+            return iterationCount < 136 //136
+        },
+
+        function (async_for_loop_callback) {
+            var containerName;
+
+            if(iterationCount < 10) {
+                containerName = "KETI00" + iterationCount;
+            } else if (iterationCount < 100) {
+                containerName = "KETI0" + iterationCount;
+            } else {
+                containerName = "KETI" + iterationCount;
+            }
+
+            retreiveExecutionForStatus(containerName, loraStatusArray, function (statusCode) {
                 if(statusCode == 200) {
                     iterationCount++;
                     async_for_loop_callback (null, iterationCount);
@@ -98,7 +171,6 @@ loraWebIndex.get('/localLoraSensorsCollector', function (request, response) {
 });
 
 loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
-    console.log("inininin")
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -132,5 +204,39 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 
 // Server start
 http.createServer(loraWebIndex).listen(62590, function () {
+
+    // var playConsole = setInterval(function() {
+    //     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
+    //
+    //     requestToAnotherServer({
+    //         url: targetURL,
+    //         method: 'GET',
+    //         json: true,
+    //         headers: { // Basic AE resource structure for registration
+    //             'Accept': 'application/json',
+    //             'X-M2M-RI': '12345',
+    //             'X-M2M-Origin': 'Origin',
+    //         }
+    //     }, function (error, oneM2MResponse, body) {
+    //         if(typeof(oneM2MResponse) !== 'undefined') {
+    //             var root = oneM2MResponse.body;
+    //             var contentInstance = root['m2m:cin'];
+    //             var creationTime = contentInstance['ct'];
+    //             console.log(containerName + " : " + creationTime);
+    //
+    //             var loraSensorName = containerName;
+    //
+    //             var tempJSONObject = new Object();
+    //             tempJSONObject.deviceName = loraSensorName;
+    //             tempJSONObject.creationTime = creationTime;
+    //             loraStatusArray.push(tempJSONObject);
+    //
+    //             callBackResponse(oneM2MResponse.statusCode);
+    //         } else if (error) {
+    //
+    //         }
+    //     });
+    // }, 3000);
+
     console.log('Server running port at ' + 'http://127.0.0.1:62590');
 });

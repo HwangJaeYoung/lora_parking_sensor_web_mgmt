@@ -216,3 +216,7 @@ ul.side_list li {
 .sync_city_image {
     margin-bottom: 5px;
 }
+
+p {
+    color: black;
+}

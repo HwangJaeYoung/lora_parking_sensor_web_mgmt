@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="styleMgmtPage.css">
-    <link rel="stylesheet" href="contactUS.css">
 
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
@@ -31,227 +30,110 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
     <script type="text/javascript">
-
-        var waitingDialog = waitingDialog || (function ($) {
-            'use strict';
-
-            // Creating modal dialog's DOM
-            var $dialog = $(
-                '<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
-                '<div class="modal-dialog modal-m">' +
-                '<div class="modal-content">' +
-                '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
-                '<div class="modal-body">' +
-                '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
-                '</div>' +
-                '</div></div></div>');
-
-            return {
-                /**
-                 * Opens our dialog
-                 * @param message Custom message
-                 * @param options Custom options:
-                 * 				  options.dialogSize - bootstrap postfix for dialog size, e.g. "sm", "m";
-                 * 				  options.progressType - bootstrap postfix for progress bar type, e.g. "success", "warning".
-                 */
-                show: function (message, options) {
-                    // Assigning defaults
-                    if (typeof options === 'undefined') {
-                        options = {};
-                    }
-                    if (typeof message === 'undefined') {
-                        message = 'Loading';
-                    }
-                    var settings = $.extend({
-                        dialogSize: 'm',
-                        progressType: '',
-                        onHide: null // This callback runs after the dialog was hidden
-                    }, options);
-
-                    // Configuring dialog
-                    $dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
-                    $dialog.find('.progress-bar').attr('class', 'progress-bar');
-                    if (settings.progressType) {
-                        $dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
-                    }
-                    $dialog.find('h3').text(message);
-                    // Adding callbacks
-                    if (typeof settings.onHide === 'function') {
-                        $dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
-                            settings.onHide.call($dialog);
-                        });
-                    }
-                    // Opening dialog
-                    $dialog.modal();
-                },
-                /**
-                 * Closes dialog
-                 */
-                hide: function () {
-                    $dialog.modal('hide');
-                }
-            };
-        })(jQuery);
-
         $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({
                 theme: "minimal"
             });
-
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar, #content').toggleClass('active');
                 $('.collapse.in').toggleClass('in');
                 $('a[aria-expanded=true]').attr('aria-expanded', 'false');
             });
         });
-
-        $(document).on('click', '#getLoRaStatus', function() {
-
-            waitingDialog.show();
-
-            $.ajax({
-                url: 'http://localhost:62590/localLoraSensorsCollector',
-                type: "get",
-                cache: false,
-                timeout: 30000,
-                contentType: "application/json",
-                success: function (data) {
-                    var loraSensorsList = data['loraSensorsList'];
-
-                    for(var i = 0; i < loraSensorsList.length; i++) {
-
-                        var deviceId = loraSensorsList[i].deviceName;
-                        var deviceCreationTime = loraSensorsList[i].creationTime;
-
-                        var deviceElement = $("<tr>")
-
-                        // device number
-                        var deviceNumberTD = $('<td>');
-                        deviceNumberTD.attr({
-                            "class":"col-xs-1"
-                        });
-                        deviceNumberTD.html(i + 1);
-
-                        // device ID
-                        var deviceIdTD = $('<td>');
-                        deviceIdTD.attr({
-                            "class": "col-xs-4"
-                        });
-                        deviceIdTD.html(deviceId);
-
-                        // device creation time
-                        var deviceCreationTimeTD = $('<td>');
-                        deviceCreationTimeTD.attr({
-                            "class": "col-xs-4"
-                        });
-                        deviceCreationTimeTD.html(deviceCreationTime);
-
-                        deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                        var paramListRoot = $('#loraSensorsTable');
-                        paramListRoot.append(deviceElement);
-
-                        waitingDialog.hide();
-                    }
-                }, error: function (xhr, textStatus, errorThrown) {
-                    alert(textStatus + ' : ' + errorThrown);
-                }
-            });
-        });
     </script>
-</head>
+  </head>
 
-<body>
-<div class="wrapper">
-    <!-- Sidebar  -->
-    <nav id="sidebar">
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar  -->
+      <nav id="sidebar">
         <div class="sidebar-header">
-            <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
+          <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
         </div>
 
         <ul class="side_list list-unstyled components">
-            <li>
-                <a href="http://localhost:62590/loraWebHome">Home</a>
-            </li>
-            <li>
-                <a href="loraSensorsMgmt.html">Sensors</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">IPEs</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">PoC Architecture</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">About</a>
-            </li>
-            <li>
-                <a href="loraWebContactUS.html">Contact US</a>
-            </li>
+          <li>
+            <a href="http://localhost:62590/loraWebHome">Home</a>
+          </li>
+          <li>
+            <a href="loraSensorsMgmt.html">Sensors</a>
+          </li>
+          <li>
+            <a href="loraIPEsMgmt.html">IPEs</a>
+          </li>
+          <li>
+            <a href="loraPoC.html">PoC Architecture</a>
+          </li>
+          <li>
+            <a href="loraAbout.html">About</a>
+          </li>
+          <li>
+            <a href="loraWebContactUS.html">Contact US</a>
+          </li>
         </ul>
 
         <div class="logo_image_div" style="height:60px;width:240px">
-            <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
-            <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
+          <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
+          <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
         </div>
-    </nav>
+      </nav>
 
-    <!-- Page Content  -->
-    <div class="container">
+      <!-- Page Content  -->
+      <div class="container">
         <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="collapse navbar-collapse">
-                    <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
-                        <i class="fas fa-align-left"></i>
-                        <span> Toggle Sidebar </span>
-                    </button>
-                </div>
-            </nav>
-
-            <div class="row">
-                <!-- Blog Post Content Column -->
-                <div class="col-lg-12">
-                    <hr>
-                        <h2> Synchronicity </h2>
-                    <hr>
-
-                    <!-- Preview Image -->
-                    <img class="img-responsive" src="image_for_about_sync.png">
-
-                    <hr>
-                        <!-- Post Content -->
-                        <p class="lead" style="text-align:justify"> SynchroniCity opens up a global IoT market where cities and businesses develop shared digital services to improve the lives of citizens
-                            and grow local economies. The SynchroniCity IoT Large-Scale Pilot for smart cities is built on the belief that creating a simplified, open and agile
-                            digital market across borders will help cities and its citizens get better services. It will also help businesses of all sizes transparently compete and
-                            easily scale their products and solutions. All this together will enable the identification and development of agile city standards that will allow to establish
-                            an effective marketplace for all.​
-                        </p>
-                    <hr>
-                </div>
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse">
+              <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
+                <i class="fas fa-align-left"></i>
+                <span> Toggle Sidebar </span>
+              </button>
             </div>
+          </nav>
 
-            <div class="row">
-                <!-- Blog Post Content Column -->
-                <div class="col-lg-12">
-                    <hr>
-                        <h2> KETI's Parking sensor PoC </h2>
-                    <hr>
+          <div class="row">
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-12">
+              <hr>
+              <h2> Synchronicity </h2>
+              <hr>
 
-                    <!-- Preview Image -->
-                    <img class="img-responsive" src="image_for_about_keti_poc.png">
+              <!-- Preview Image -->
+              <img class="img-responsive" src="image_for_about_sync.png">
 
-                    <hr>
-                        <!-- Post Content -->
-                        <p class="lead" style="text-align:justify"> SynchroniCity opens up a global IoT market where cities and businesses develop shared digital services to improve the lives of citizens
-                            and grow local economies. The SynchroniCity IoT Large-Scale Pilot for smart cities is built on the belief that creating a simplified, open and agile
-                            digital market across borders will help cities and its citizens get better services. It will also help businesses of all sizes transparently compete and
-                            easily scale their products and solutions. All this together will enable the identification and development of agile city standards that will allow to establish
-                            an effective marketplace for all.​
-                        </p>
-                    <hr>
-                </div>
+              <hr>
+              <!-- Post Content -->
+              <p class="lead" style="text-align:justify" style="color:black"> SynchroniCity opens up a global IoT market where cities and businesses develop shared digital services to improve the lives of citizens
+                and grow local economies. The SynchroniCity IoT Large-Scale Pilot for smart cities is built on the belief that creating a simplified, open and agile
+                digital market across borders will help cities and its citizens get better services. It will also help businesses of all sizes transparently compete and
+                easily scale their products and solutions. All this together will enable the identification and development of agile city standards that will allow to establish
+                an effective marketplace for all.​
+              </p>
+              <hr>
             </div>
+          </div>
+
+          <div class="row">
+            <!-- Blog Post Content Column -->
+            <div class="col-lg-12">
+              <hr>
+                <h2> KETI's Parking sensor PoC </h2>
+              <hr>
+
+              <!-- Preview Image -->
+              <img class="img-responsive" src="image_for_about_keti_poc.png">
+
+              <hr>
+                <!-- Post Content -->
+                <p class="lead" style="text-align:justify"> Currently, we are conducting and evaluating the LoRa parking sensors Proof of Concepts (PoC) in KETI’s parking lot
+                  in order to get the huge data from the sensors and use them for the Synchronicity agile validation. In addition, as a more improved way,
+                  to get the information like whether the parking lot is occupied or not,
+                  we will study and prove the parking lot PoC by using image processing and Deep learning.
+                </p>
+              <hr>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>
