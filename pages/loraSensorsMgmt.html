@@ -28,6 +28,35 @@
         <!-- jQuery Custom Scroller CDN -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
+        <!-- Chart -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script type="text/javascript">
+            // Load google charts
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            // Draw the chart and set the chart values
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Task', 'Hours per Day'],
+                    ['Work', 8],
+                    ['Friends', 2],
+                    ['Eat', 2],
+                    ['TV', 2],
+                    ['Gym', 2],
+                    ['Sleep', 8]
+                ]);
+
+                // Optional; add a title and set the width and height of the chart
+                var options = {'title':'My Average Day', 'width':550, 'height':400};
+
+                // Display the chart inside the <div> element with id="piechart"
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                chart.draw(data, options);
+            }
+        </script>
+
         <script type="text/javascript">
 
             var waitingDialog = waitingDialog || (function ($) {
@@ -157,41 +186,8 @@
             });
 
             $(document).on('click', '#getLoRaInfo', function () {
-                console.log("clicked email button");
 
-                $.ajax({
-                    url: 'http://localhost:62590/loraEmailSendingTest',
-                    type: "get",
-                    cache: false,
-                    timeout: 30000,
-                    contentType: "application/json",
-                    success: function (data) {
-                        console.log("E-mail sending test");
-                    }, error: function (xhr, textStatus, errorThrown) {
-                        alert(textStatus + ' : ' + errorThrown);
-                    }
-                });
             });
-        </script>
-
-        <script>
-            //doughnut
-            var ctxD = document.getElementById("doughnutChart").getContext('2d');
-            var myLineChart = new Chart(ctxD, {
-                type: 'doughnut',
-                data: {
-                    labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
-                    datasets: [{
-                        data: [300, 50, 100, 40, 120],
-                        backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
-                        hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-
         </script>
     </head>
 
@@ -252,7 +248,6 @@
 
                     <h2> LoRa sensors status </h2>
 
-                    <canvas id="doughnutChart"></canvas>
 
                     <div class="table-wrapper-scroll-y">
                         <table id="loraSensorsTable" class="table table table-bordered table-striped">
@@ -265,7 +260,23 @@
                             </thead>
                         </table>
                     </div>
+
+                    <div id="piechart"></div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Separated link</a>
+                        </div>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </body>

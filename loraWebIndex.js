@@ -10,6 +10,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var requestToServer = require('request');
 var nodemailer = require('nodemailer');
+
+require('date-utils');
 require('dotenv').config();
 
 var loraWebIndex = express();
@@ -206,7 +208,7 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 http.createServer(loraWebIndex).listen(62590, function () {
 
     var heartBeat = setInterval(function() {
-        var targetURL = "http://localhost:7591/loraipe"
+        var targetURL = "http://localhost:7591/loraipe";
 
         requestToAnotherServer({
             url: targetURL,
@@ -229,11 +231,20 @@ http.createServer(loraWebIndex).listen(62590, function () {
                     }
                 });
 
+                var maillist = [
+                    'forest62590@naver.com',
+                    'forest62590@gmail.com',
+                ];
+
+                // Getting the current IPE terminated time
+                var newDate =  new Date();
+                var currentTime = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+
                 var mailOptions = {
                     from: 'forest62590@gmail.com',
-                    to: 'forest62590@naver.com',
-                    subject: 'Sending Email using Node.js',
-                    html: '<h1>Welcome</h1><p>That was easy!</p>'
+                    to: maillist,
+                    subject: 'LoRa IPE was terminated by unknown errors',
+                    html: '<p>LoRa IPE was terminated at </p>' + '<p>' + currentTime + '</p>'
                 };
 
                 transporter.sendMail(mailOptions, function(error, info){
@@ -243,10 +254,9 @@ http.createServer(loraWebIndex).listen(62590, function () {
                         console.log('Email sent: ' + info.response);
                     }
                 });
-
             }
         });
-    }, 30000);
+    }, 60000);
 
     console.log('Server running port at ' + 'http://127.0.0.1:62590');
 });
