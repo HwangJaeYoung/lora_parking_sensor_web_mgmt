@@ -205,38 +205,48 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 // Server start
 http.createServer(loraWebIndex).listen(62590, function () {
 
-    // var playConsole = setInterval(function() {
-    //     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
-    //
-    //     requestToAnotherServer({
-    //         url: targetURL,
-    //         method: 'GET',
-    //         json: true,
-    //         headers: { // Basic AE resource structure for registration
-    //             'Accept': 'application/json',
-    //             'X-M2M-RI': '12345',
-    //             'X-M2M-Origin': 'Origin',
-    //         }
-    //     }, function (error, oneM2MResponse, body) {
-    //         if(typeof(oneM2MResponse) !== 'undefined') {
-    //             var root = oneM2MResponse.body;
-    //             var contentInstance = root['m2m:cin'];
-    //             var creationTime = contentInstance['ct'];
-    //             console.log(containerName + " : " + creationTime);
-    //
-    //             var loraSensorName = containerName;
-    //
-    //             var tempJSONObject = new Object();
-    //             tempJSONObject.deviceName = loraSensorName;
-    //             tempJSONObject.creationTime = creationTime;
-    //             loraStatusArray.push(tempJSONObject);
-    //
-    //             callBackResponse(oneM2MResponse.statusCode);
-    //         } else if (error) {
-    //
-    //         }
-    //     });
-    // }, 3000);
+    var heartBeat = setInterval(function() {
+        var targetURL = "http://localhost:7591/loraipe"
+
+        requestToAnotherServer({
+            url: targetURL,
+            method: 'GET',
+            json: true,
+            headers: { // Basic AE resource structure for registration
+                'Accept': 'application/json',
+            }
+        }, function (error, response, body) {
+            if(typeof(response) !== 'undefined') {
+                console.log("LoRa IPE server is running at http://localhost:7591")
+            } else if (error) {
+                console.log(error)
+
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: process.env.EMAIL_ID,
+                        pass: process.env.EMAIL_PWD
+                    }
+                });
+
+                var mailOptions = {
+                    from: 'forest62590@gmail.com',
+                    to: 'forest62590@naver.com',
+                    subject: 'Sending Email using Node.js',
+                    html: '<h1>Welcome</h1><p>That was easy!</p>'
+                };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+
+            }
+        });
+    }, 30000);
 
     console.log('Server running port at ' + 'http://127.0.0.1:62590');
 });

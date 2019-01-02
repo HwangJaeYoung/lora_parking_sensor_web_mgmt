@@ -1,310 +1,196 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title> KETI LoRa device manager </title>
+        <title> KETI LoRa device manager </title>
 
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="styleMgmtPage.css">
-    <link rel="stylesheet" href="contactUS.css">
+        <!-- Bootstrap CSS CDN -->
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <!-- Our Custom CSS -->
+        <link rel="stylesheet" href="styleMgmtPage.css">
+        <link rel="stylesheet" href="contactUS.css">
 
-    <!-- Scrollbar Custom CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+        <!-- Scrollbar Custom CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
-    <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <!-- Font Awesome JS -->
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
-    <!-- Setting the JQuery & JQuery-UI -->
-    <script src="jquery.js"></script>
+        <!-- Setting the JQuery & JQuery-UI -->
+        <script src="jquery.js"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="js/bootstrap.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.js"></script>
 
-    <!-- jQuery Custom Scroller CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+        <!-- jQuery Custom Scroller CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
-    <script type="text/javascript">
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#sidebar").mCustomScrollbar({
+                    theme: "minimal"
+                });
 
-        var waitingDialog = waitingDialog || (function ($) {
-            'use strict';
-
-            // Creating modal dialog's DOM
-            var $dialog = $(
-                '<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
-                '<div class="modal-dialog modal-m">' +
-                '<div class="modal-content">' +
-                '<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
-                '<div class="modal-body">' +
-                '<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
-                '</div>' +
-                '</div></div></div>');
-
-            return {
-                /**
-                 * Opens our dialog
-                 * @param message Custom message
-                 * @param options Custom options:
-                 * 				  options.dialogSize - bootstrap postfix for dialog size, e.g. "sm", "m";
-                 * 				  options.progressType - bootstrap postfix for progress bar type, e.g. "success", "warning".
-                 */
-                show: function (message, options) {
-                    // Assigning defaults
-                    if (typeof options === 'undefined') {
-                        options = {};
-                    }
-                    if (typeof message === 'undefined') {
-                        message = 'Loading';
-                    }
-                    var settings = $.extend({
-                        dialogSize: 'm',
-                        progressType: '',
-                        onHide: null // This callback runs after the dialog was hidden
-                    }, options);
-
-                    // Configuring dialog
-                    $dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
-                    $dialog.find('.progress-bar').attr('class', 'progress-bar');
-                    if (settings.progressType) {
-                        $dialog.find('.progress-bar').addClass('progress-bar-' + settings.progressType);
-                    }
-                    $dialog.find('h3').text(message);
-                    // Adding callbacks
-                    if (typeof settings.onHide === 'function') {
-                        $dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
-                            settings.onHide.call($dialog);
-                        });
-                    }
-                    // Opening dialog
-                    $dialog.modal();
-                },
-                /**
-                 * Closes dialog
-                 */
-                hide: function () {
-                    $dialog.modal('hide');
-                }
-            };
-        })(jQuery);
-
-        $(document).ready(function () {
-            $("#sidebar").mCustomScrollbar({
-                theme: "minimal"
+                $('#sidebarCollapse').on('click', function () {
+                    $('#sidebar, #content').toggleClass('active');
+                    $('.collapse.in').toggleClass('in');
+                    $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+                });
             });
+        </script>
+    </head>
 
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar, #content').toggleClass('active');
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
-        });
+    <body>
+        <div class="wrapper">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
+                </div>
 
-        $(document).on('click', '#getLoRaStatus', function() {
+                <ul class="side_list list-unstyled components">
+                    <li>
+                        <a href="http://localhost:62590/loraWebHome">Home</a>
+                    </li>
+                    <li>
+                        <a href="loraSensorsMgmt.html">Sensors</a>
+                    </li>
+                    <li>
+                        <a href="loraIPEsMgmt.html">IPEs</a>
+                    </li>
+                    <li>
+                        <a href="loraPoC.html">PoC Architecture</a>
+                    </li>
+                    <li>
+                        <a href="loraAbout.html">About</a>
+                    </li>
+                    <li>
+                        <a href="loraWebContactUS.html">Contact US</a>
+                    </li>
+                </ul>
 
-            waitingDialog.show();
-
-            $.ajax({
-                url: 'http://localhost:62590/localLoraSensorsCollector',
-                type: "get",
-                cache: false,
-                timeout: 30000,
-                contentType: "application/json",
-                success: function (data) {
-                    var loraSensorsList = data['loraSensorsList'];
-
-                    for(var i = 0; i < loraSensorsList.length; i++) {
-
-                        var deviceId = loraSensorsList[i].deviceName;
-                        var deviceCreationTime = loraSensorsList[i].creationTime;
-
-                        var deviceElement = $("<tr>")
-
-                        // device number
-                        var deviceNumberTD = $('<td>');
-                        deviceNumberTD.attr({
-                            "class":"col-xs-1"
-                        });
-                        deviceNumberTD.html(i + 1);
-
-                        // device ID
-                        var deviceIdTD = $('<td>');
-                        deviceIdTD.attr({
-                            "class": "col-xs-4"
-                        });
-                        deviceIdTD.html(deviceId);
-
-                        // device creation time
-                        var deviceCreationTimeTD = $('<td>');
-                        deviceCreationTimeTD.attr({
-                            "class": "col-xs-4"
-                        });
-                        deviceCreationTimeTD.html(deviceCreationTime);
-
-                        deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                        var paramListRoot = $('#loraSensorsTable');
-                        paramListRoot.append(deviceElement);
-
-                        waitingDialog.hide();
-                    }
-                }, error: function (xhr, textStatus, errorThrown) {
-                    alert(textStatus + ' : ' + errorThrown);
-                }
-            });
-        });
-    </script>
-</head>
-
-<body>
-<div class="wrapper">
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
-        </div>
-
-        <ul class="side_list list-unstyled components">
-            <li>
-                <a href="http://localhost:62590/loraWebHome">Home</a>
-            </li>
-            <li>
-                <a href="loraSensorsMgmt.html">Sensors</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">IPEs</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">PoC Architecture</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">About</a>
-            </li>
-            <li>
-                <a href="loraWebContactUS.html">Contact US</a>
-            </li>
-        </ul>
-
-        <div class="logo_image_div" style="height:60px;width:240px">
-            <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
-            <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
-        </div>
-    </nav>
-
-    <!-- Page Content  -->
-    <div class="container">
-        <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="collapse navbar-collapse">
-                    <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
-                        <i class="fas fa-align-left"></i>
-                        <span> Toggle Sidebar </span>
-                    </button>
+                <div class="logo_image_div" style="height:60px;width:240px">
+                    <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
+                    <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
                 </div>
             </nav>
 
-            <!--Grid row-->
-            <div class="row">
-                <!--Grid column-->
-                <div class="col-md-6 mb-4">
-                    <!--Card-->
-                    <div class="card card-cascade narrower">
-                        <!--Card image-->
-                        <div class="view view-cascade gradient-card-header peach-gradient">
-                            <h2 class="mb-0"> Korea Electronics Technology Institute </h2>
+            <!-- Page Content  -->
+            <div class="container">
+                <div id="content">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="collapse navbar-collapse">
+                            <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
+                                <i class="fas fa-align-left"></i>
+                                <span> Toggle Sidebar </span>
+                            </button>
                         </div>
-                        <!--/Card image-->
+                    </nav>
 
-                        <!--Card content-->
-                        <div class="card-body card-body-cascade text-center">
-                            <!--Google map-->
-                            <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 500px">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3169.4043312847202!2d127.15759731577114!3d37.40391697982872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca84f2763687d%3A0x7a692e34895f8ca4!2sKorea+Electronics+Technology+Institute!5e0!3m2!1sko!2sus!4v1545834344348" frameborder="0" style="border:0" allowfullscreen></iframe>
+                    <!--Grid row-->
+                    <div class="row">
+                        <!--Grid column-->
+                        <div class="col-md-6 mb-4">
+                            <!--Card-->
+                            <div class="card card-cascade narrower">
+                                <!--Card image-->
+                                <div class="view view-cascade gradient-card-header peach-gradient">
+                                    <h2 class="mb-0"> Korea Electronics Technology Institute </h2>
+                                </div>
+                                <!--/Card image-->
+
+                                <!--Card content-->
+                                <div class="card-body card-body-cascade text-center">
+                                    <!--Google map-->
+                                    <div id="map-container-google-9" class="z-depth-1-half map-container-5" style="height: 500px">
+                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3169.4043312847202!2d127.15759731577114!3d37.40391697982872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca84f2763687d%3A0x7a692e34895f8ca4!2sKorea+Electronics+Technology+Institute!5e0!3m2!1sko!2sus!4v1545834344348" frameborder="0" style="border:0" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                                <!--/.Card content-->
+                            </div>
+                            <!--/.Card-->
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-lg-5 mb-4">
+
+                            <!--Form with header-->
+                            <div class="card contact-info-form">
+
+                                <div class="card-body card-body-height">
+                                    <!--Header-->
+                                    <div class="form-header blue accent-1">
+                                        <h3><i class="fas fa-envelope"></i> Write to us:</h3>
+                                    </div>
+
+                                    <p>We'll write rarely, but only the best content.</p>
+                                    <br>
+
+                                    <!--Body-->
+                                    <div class="md-form">
+                                        <i class="fas fa-user prefix grey-text"></i>
+                                        <label for="form-name">Your name</label>
+                                        <input type="text" id="form-name" class="form-control">
+
+                                    </div>
+
+                                    <div class="md-form contact-us-form-cell-height">
+                                        <i class="fas fa-envelope prefix grey-text"></i>
+                                        <label for="form-email">Your email</label>
+                                        <input type="text" id="form-email" class="form-control">
+                                    </div>
+
+                                    <div class="md-form contact-us-form-cell-height">
+                                        <i class="fas fa-tag prefix grey-text"></i>
+                                        <label for="form-Subject">Subject</label>
+                                        <input type="text" id="form-Subject" class="form-control">
+                                    </div>
+
+                                    <div class="md-form contact-us-form-cell-height">
+                                        <i class="fas fa-pencil-alt prefix grey-text"></i>
+                                        <label for="form-text">Please fill in the your questions</label>
+                                        <textarea type="text" id="form-text" class="form-control md-textarea" rows="3"></textarea>
+                                    </div>
+
+                                    <div class="text-center mt-4 contact-us-form-cell-height">
+                                        <button class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Form with header-->
+                        </div>
+                    </div>
+
+                    <!--Grid column-->
+                    <div class="row detailed-info">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <a class="btn-floating blue accent-1"><i class="fas fa-map-marker-alt"></i></a>
+                                <p>25, Saenari-ro, Bundang-gu, Seongnam-si</p>
+                                <p>Gyeonggi-do, South Korea</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <a class="btn-floating blue accent-1"><i class="fas fa-phone"></i></a>
+                                <p>+01 1234 5678</p>
+                                <p>+01 0987 6543</p>
+                            </div>
+
+                            <div class="col-md-4">
+                                <a class="btn-floating blue accent-1"><i class="fas fa-envelope"></i></a>
+                                <p>sm.jeong.keti@gmail.com</p>
+                                <p>forest62590@gmail.com</p>
                             </div>
                         </div>
-                        <!--/.Card content-->
-                    </div>
-                    <!--/.Card-->
-                </div>
-                <!--Grid column-->
-
-                <!--Grid column-->
-                <div class="col-lg-5 mb-4">
-
-                    <!--Form with header-->
-                    <div class="card contact-info-form">
-
-                        <div class="card-body">
-                            <!--Header-->
-                            <div class="form-header blue accent-1">
-                                <h3><i class="fas fa-envelope"></i> Write to us:</h3>
-                            </div>
-
-                            <p>We'll write rarely, but only the best content.</p>
-                            <br>
-
-                            <!--Body-->
-                            <div class="md-form">
-                                <i class="fas fa-user prefix grey-text"></i>
-                                <input type="text" id="form-name" class="form-control">
-                                <label for="form-name">Your name</label>
-                            </div>
-
-                            <div class="md-form">
-                                <i class="fas fa-envelope prefix grey-text"></i>
-                                <input type="text" id="form-email" class="form-control">
-                                <label for="form-email">Your email</label>
-                            </div>
-
-                            <div class="md-form">
-                                <i class="fas fa-tag prefix grey-text"></i>
-                                <input type="text" id="form-Subject" class="form-control">
-                                <label for="form-Subject">Subject</label>
-                            </div>
-
-                            <div class="md-form">
-                                <i class="fas fa-pencil-alt prefix grey-text"></i>
-                                <textarea type="text" id="form-text" class="form-control md-textarea" rows="3"></textarea>
-                                <label for="form-text">Icon Prefix</label>
-                            </div>
-
-                            <div class="text-center mt-4">
-                                <button class="btn btn-light-blue">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Form with header-->
-                </div>
-            </div>
-
-            <!--Grid column-->
-            <div class="row">
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <a class="btn-floating blue accent-1"><i class="fas fa-map-marker-alt"></i></a>
-                        <p>San Francisco, CA 94126</p>
-                        <p>United States</p>
-                    </div>
-
-                    <div class="col-md-4">
-                        <a class="btn-floating blue accent-1"><i class="fas fa-phone"></i></a>
-                        <p>+ 01 234 567 89</p>
-                        <p>Mon - Fri, 8:00-22:00</p>
-                    </div>
-
-                    <div class="col-md-4">
-                        <a class="btn-floating blue accent-1"><i class="fas fa-envelope"></i></a>
-                        <p>info@gmail.com</p>
-                        <p>sale@gmail.com</p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>
