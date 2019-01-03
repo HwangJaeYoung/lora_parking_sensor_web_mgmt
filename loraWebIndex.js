@@ -24,6 +24,7 @@ loraWebIndex.use(express.static('pages'));
 loraWebIndex.use(express.static('scripts'));
 loraWebIndex.use(express.static('styles'));
 loraWebIndex.use(express.static('images'));
+loraWebIndex.use(express.static('MDBChartLib'));
 
 var requestToAnotherServer = require('request');
 
@@ -207,56 +208,56 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 // Server start
 http.createServer(loraWebIndex).listen(62590, function () {
 
-    var heartBeat = setInterval(function() {
-        var targetURL = "http://localhost:7591/loraipe";
-
-        requestToAnotherServer({
-            url: targetURL,
-            method: 'GET',
-            json: true,
-            headers: { // Basic AE resource structure for registration
-                'Accept': 'application/json',
-            }
-        }, function (error, response, body) {
-            if(typeof(response) !== 'undefined') {
-                console.log("LoRa IPE server is running at http://localhost:7591")
-            } else if (error) {
-                console.log(error)
-
-                var transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: process.env.EMAIL_ID,
-                        pass: process.env.EMAIL_PWD
-                    }
-                });
-
-                var maillist = [
-                    'forest62590@naver.com',
-                    'forest62590@gmail.com',
-                ];
-
-                // Getting the current IPE terminated time
-                var newDate =  new Date();
-                var currentTime = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
-
-                var mailOptions = {
-                    from: 'forest62590@gmail.com',
-                    to: maillist,
-                    subject: 'LoRa IPE was terminated by unknown errors',
-                    html: '<p>LoRa IPE was terminated at </p>' + '<p>' + currentTime + '</p>'
-                };
-
-                transporter.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                    }
-                });
-            }
-        });
-    }, 60000);
+    // var heartBeat = setInterval(function() {
+    //     var targetURL = "http://localhost:7591/loraipe";
+    //
+    //     requestToAnotherServer({
+    //         url: targetURL,
+    //         method: 'GET',
+    //         json: true,
+    //         headers: { // Basic AE resource structure for registration
+    //             'Accept': 'application/json',
+    //         }
+    //     }, function (error, response, body) {
+    //         if(typeof(response) !== 'undefined') {
+    //             console.log("LoRa IPE server is running at http://localhost:7591")
+    //         } else if (error) {
+    //             console.log(error)
+    //
+    //             var transporter = nodemailer.createTransport({
+    //                 service: 'gmail',
+    //                 auth: {
+    //                     user: process.env.EMAIL_ID,
+    //                     pass: process.env.EMAIL_PWD
+    //                 }
+    //             });
+    //
+    //             var maillist = [
+    //                 'forest62590@naver.com',
+    //                 'forest62590@gmail.com',
+    //             ];
+    //
+    //             // Getting the current IPE terminated time
+    //             var newDate =  new Date();
+    //             var currentTime = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+    //
+    //             var mailOptions = {
+    //                 from: 'forest62590@gmail.com',
+    //                 to: maillist,
+    //                 subject: 'LoRa IPE was terminated by unknown errors',
+    //                 html: '<p>LoRa IPE was terminated at </p>' + '<p>' + currentTime + '</p>'
+    //             };
+    //
+    //             transporter.sendMail(mailOptions, function(error, info){
+    //                 if (error) {
+    //                     console.log(error);
+    //                 } else {
+    //                     console.log('Email sent: ' + info.response);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }, 60000);
 
     console.log('Server running port at ' + 'http://127.0.0.1:62590');
 });
