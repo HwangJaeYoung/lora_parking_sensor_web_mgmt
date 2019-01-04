@@ -233,7 +233,6 @@
             };
 
             drawingChart = function (listName, sensors_origin, sensors_diff_min) {
-
                 var labels = [], datasets_data = [], datasets_bg_color, datasets_bg_color_hover;
 
                 if(listName == "time_interval_slt_all") {
@@ -270,6 +269,14 @@
                     datasets_bg_color = ["#F7464A", "#13c2f7"];
                     datasets_bg_color_hover = ["#FF5A5E", "#13C2F7"];
                 }
+
+                // Remove the existing chart
+                var div = document.getElementById("chartParentDiv");
+                div.innerHTML = '';
+
+                $('<canvas/>', {
+                    id: 'doughnutChart'
+                }).appendTo('#chartParentDiv');
 
                 var ctxD = document.getElementById("doughnutChart").getContext('2d');
                 var myLineChart = new Chart(ctxD, {
@@ -388,7 +395,7 @@
                     <h2> LoRa sensors status </h2>
 
                     <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <div class="col-md-6 mb-4" id="chartParentDiv">
                             <!-- Status Chart -->
                             <canvas id="doughnutChart"></canvas>
                         </div>
