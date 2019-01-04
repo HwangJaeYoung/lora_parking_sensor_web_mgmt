@@ -31,6 +31,9 @@
         <!-- Chart -->
         <script src="js/mdb.js"></script>
 
+        <!-- Moments.js -->
+        <script src="moment/moment.js"></script>
+
         <script type="text/javascript">
 
             // backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
@@ -186,6 +189,9 @@
                         waitingDialog.hide();
                         drawingChart ("time_interval_slt_all", loraSensorsList.length, 0);
 
+                        var updateTime = moment().format("kk:mm:ss, MMMM, Do YYYY");
+                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime;
+
                     }, error: function (xhr, textStatus, errorThrown) {
                         alert(textStatus + ' : ' + errorThrown);
                     }
@@ -295,7 +301,17 @@
                             drawingTable (allSensors);
                             drawingChart ("time_interval_slt_all", allSensors.length, 0);
                         } else if (menuId === "time_interval_slt_10m") {
-                            const sensors10mDiff = loraSensorsList;
+                            const tempSensorsList = loraSensorsList;
+                            var sensors20mDiff = [];
+
+
+                            for(var i = 0; i < tempSensorsList.length; i++) {
+                                var deviceCreationTime = tempSensorsList[i].creationTime;
+                                var splittedSensorsList = deviceCreationTime.split("T");
+
+                                console.log(splittedSensorsList[0]);
+                                console.log(splittedSensorsList[1]);
+                            }
 
                             drawingChart ("time_interval_slt_10m", 50, 80);
                         } else if (menuId === "time_interval_slt_20m") {
@@ -362,18 +378,7 @@
                                 <span> Get LoRa Status </span>
                             </button>
 
-                            <button class="btn btn-default dropdown-toggle btn-primary" type="button" id="time_interval_dropdown_button" data-toggle="dropdown"> Set Time Interval<span class="caret"></span></button>
-
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul">
-                                <li role="presentation" id="time_interval_slt_all"><a role="menuitem" href="#">All</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation" id="time_interval_slt_10m"><a role="menuitem" href="#">~ 10min</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation" id="time_interval_slt_20m"><a role="menuitem" href="#">~ 20min</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li role="presentation" id="time_interval_slt_30m"><a role="menuitem" href="#">~ 30min</a></li>
-                            </ul>
-
+                            <span id="updateTime"> Update Time:  </span>
                             <!--<button type="button" id="getLoRaInfo" class="btn btn-warning btn-space">-->
                                 <!--<span> LoRa Info </span>-->
                             <!--</button>-->
@@ -384,34 +389,36 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
-
                             <!-- Status Chart -->
                             <canvas id="doughnutChart"></canvas>
-
-                            <!-- Time selection button -->
-                            <!--<div>-->
-                                <!--<button class="btn btn-default dropdown-toggle btn-primary" type="button" id="time_interval_dropdown_button" data-toggle="dropdown"> Set Time Interval<span class="caret"></span></button>-->
-
-                                <!--<ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul">-->
-                                    <!--<li role="presentation" id="time_interval_slt_all"><a role="menuitem" href="#">All</a></li>-->
-                                    <!--<li role="presentation" class="divider"></li>-->
-                                    <!--<li role="presentation" id="time_interval_slt_10m"><a role="menuitem" href="#">~ 10min</a></li>-->
-                                    <!--<li role="presentation" class="divider"></li>-->
-                                    <!--<li role="presentation" id="time_interval_slt_20m"><a role="menuitem" href="#">~ 20min</a></li>-->
-                                    <!--<li role="presentation" class="divider"></li>-->
-                                    <!--<li role="presentation" id="time_interval_slt_30m"><a role="menuitem" href="#">~ 30min</a></li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
                         </div>
 
                         <div class="col-md-6 mb-4">
+                            <div class="container dropdown_menu_btn">
+                                <div class="btn-group">
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary dropdown-toggle btn-primary" type="button" id="time_interval_dropdown_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Set Time Interval<span class="caret"></span></button>
+
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul">
+                                            <li role="presentation" id="time_interval_slt_all"><a role="menuitem" href="#">All</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_10m"><a role="menuitem" href="#">~10min</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_20m"><a role="menuitem" href="#">~20min</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_30m"><a role="menuitem" href="#">~30min</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="table-wrapper-scroll-y">
-                                <table id="loraSensorsTable" class="table table table-bordered table-striped">
+                                <table id="loraSensorsTable" class="table table-bordered table-striped">
                                     <thead class="black white-text">
                                         <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col"> Device ID </th>
-                                            <th scope="col"> Device Creation Time </th>
+                                            <th scope="col"  align="center">#</th>
+                                            <th scope="col"  align="center"> Device ID </th>
+                                            <th scope="col"  align="center"> Device Creation Time </th>
                                         </tr>
                                     </thead>
                                 </table>
