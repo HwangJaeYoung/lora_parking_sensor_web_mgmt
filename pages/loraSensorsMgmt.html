@@ -35,7 +35,6 @@
         <script src="moment/moment.js"></script>
 
         <script type="text/javascript">
-
             // backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
             // hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
             $(function () {
@@ -153,40 +152,41 @@
                         loraSensorsList = data['loraSensorsList'];
                         gettingTheLoRaInfo = true;
 
-                        for (var i = 0; i < loraSensorsList.length; i++) {
-
-                            var deviceId = loraSensorsList[i].deviceName;
-                            var deviceCreationTime = loraSensorsList[i].creationTime;
-
-                            var deviceElement = $("<tr>");
-
-                            // device number
-                            var deviceNumberTD = $('<td>');
-                            deviceNumberTD.attr({
-                                "class": "col-xs-1"
-                            });
-                            deviceNumberTD.html(i + 1);
-
-                            // device ID
-                            var deviceIdTD = $('<td>');
-                            deviceIdTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            deviceIdTD.html(deviceId);
-
-                            // device creation time
-                            var deviceCreationTimeTD = $('<td>');
-                            deviceCreationTimeTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            deviceCreationTimeTD.html(deviceCreationTime);
-
-                            deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                            var paramListRoot = $('#loraSensorsTable');
-                            paramListRoot.append(deviceElement);
-                        }
+                        // for (var i = 0; i < loraSensorsList.length; i++) {
+                        //
+                        //     var deviceId = loraSensorsList[i].deviceName;
+                        //     var deviceCreationTime = loraSensorsList[i].creationTime;
+                        //
+                        //     var deviceElement = $("<tr>");
+                        //
+                        //     // device number
+                        //     var deviceNumberTD = $('<td>');
+                        //     deviceNumberTD.attr({
+                        //         "class": "col-xs-1"
+                        //     });
+                        //     deviceNumberTD.html(i + 1);
+                        //
+                        //     // device ID
+                        //     var deviceIdTD = $('<td>');
+                        //     deviceIdTD.attr({
+                        //         "class": "col-xs-4"
+                        //     });
+                        //     deviceIdTD.html(deviceId);
+                        //
+                        //     // device creation time
+                        //     var deviceCreationTimeTD = $('<td>');
+                        //     deviceCreationTimeTD.attr({
+                        //         "class": "col-xs-4"
+                        //     });
+                        //     deviceCreationTimeTD.html(deviceCreationTime);
+                        //
+                        //     deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
+                        //     var paramListRoot = $('#loraSensorsTable');
+                        //     paramListRoot.append(deviceElement);
+                        // }
 
                         waitingDialog.hide();
+                        drawingTable(loraSensorsList);
                         drawingChart ("time_interval_slt_all", loraSensorsList.length, 0);
 
                         var updateTime = moment().format("kk:mm:ss, MMMM, Do YYYY");
@@ -199,6 +199,9 @@
             });
 
             drawingTable = function (param_loraSensorsList) {
+
+                var deviceElementTbody = $("<tbody>");
+
                  for (var i = 0; i < param_loraSensorsList.length; i++) {
                     var deviceId = param_loraSensorsList[i].deviceName;
                     var deviceCreationTime = param_loraSensorsList[i].creationTime;
@@ -227,9 +230,11 @@
                     deviceCreationTimeTD.html(deviceCreationTime);
 
                     deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                    var paramListRoot = $('#loraSensorsTable');
-                    paramListRoot.append(deviceElement);
+                    deviceElementTbody.append(deviceElement);
                 }
+
+                var paramListRoot = $('#loraSensorsTable');
+                paramListRoot.append(deviceElementTbody);
             };
 
             drawingChart = function (listName, sensors_origin, sensors_diff_min) {
@@ -303,32 +308,128 @@
                     } else {
                         const menuId = $(this).attr('id');
 
-                        if (menuId === "time_interval_slt_all") {
+                        if (menuId === "time_interval_slt_all") { // All sensors
                             const allSensors = loraSensorsList;
                             drawingTable (allSensors);
                             drawingChart ("time_interval_slt_all", allSensors.length, 0);
-                        } else if (menuId === "time_interval_slt_10m") {
-                            const tempSensorsList = loraSensorsList;
-                            var sensors20mDiff = [];
 
+                        } else if (menuId === "time_interval_slt_10m") { // 10m diff
+                            const tempSensorsList = loraSensorsList;
+                            var sensors10mDiff = [];
 
                             for(var i = 0; i < tempSensorsList.length; i++) {
                                 var deviceCreationTime = tempSensorsList[i].creationTime;
                                 var splittedSensorsList = deviceCreationTime.split("T");
 
-                                console.log(splittedSensorsList[0]);
-                                console.log(splittedSensorsList[1]);
+                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+
+                                var year = date.substring(0, 4);
+                                var month = date.substring(4, 6);
+                                var day = date.substring(6, 8);
+
+                                var t_time = time.substring(0, 2);
+                                var minutes = time.substring(2, 4);
+                                var seconds = time.substring(4, 6);
+
+                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+
+                                var updateDateMoment = moment(updateDate);
+
+                                var currentDate = new Date();
+                                var ISOData = currentDate.toISOString();
+                                var currentDateMoment = ISOData.substring(0, 19);
+                                //currentDateMoment = moment(currentDateMoment);
+
+                                currentDateMoment = moment('2018-12-18T01:01:56');
+
+                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                if(timeDiff <= 7000) {
+                                    sensors10mDiff.push(tempSensorsList[i]);
+                                }
                             }
 
-                            drawingChart ("time_interval_slt_10m", 50, 80);
-                        } else if (menuId === "time_interval_slt_20m") {
-                            const sensors20mDiff = loraSensorsList;
+                            console.log(sensors10mDiff.length);
+                            drawingTable (sensors10mDiff);
+                            drawingChart ("time_interval_slt_10m", 135 - sensors10mDiff.length, sensors10mDiff.length);
 
-                            drawingChart ("time_interval_slt_20m", 50, 70);
-                        } else if (menuId === "time_interval_slt_30m") {
-                            const sensors30mDiff = loraSensorsList;
+                        } else if (menuId === "time_interval_slt_20m") { // 20min diff
+                            const tempSensorsList = loraSensorsList;
+                            var sensors20mDiff = [];
 
-                            drawingChart ("time_interval_slt_30m", 40, 98);
+                            for(var i = 0; i < tempSensorsList.length; i++) {
+                                var deviceCreationTime = tempSensorsList[i].creationTime;
+                                var splittedSensorsList = deviceCreationTime.split("T");
+
+                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+
+                                var year = date.substring(0, 4);
+                                var month = date.substring(4, 6);
+                                var day = date.substring(6, 8);
+
+                                var t_time = time.substring(0, 2);
+                                var minutes = time.substring(2, 4);
+                                var seconds = time.substring(4, 6);
+
+                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+
+                                var updateDateMoment = moment(updateDate);
+
+                                var currentDate = new Date();
+                                var ISOData = currentDate.toISOString();
+                                var currentDateMoment = ISOData.substring(0, 19);
+                                //currentDateMoment = moment(currentDateMoment);
+
+                                currentDateMoment = moment('2018-12-18T01:01:56');
+
+                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                if(timeDiff <= 8500) {
+                                    sensors20mDiff.push(tempSensorsList[i]);
+                                }
+                            }
+
+                            drawingTable (sensors20mDiff);
+                            drawingChart ("time_interval_slt_20m", 135 - sensors20mDiff.length, sensors20mDiff.length);
+
+                        } else if (menuId === "time_interval_slt_30m") { // 30min diff
+                            const tempSensorsList = loraSensorsList;
+                            var sensors30mDiff = [];
+
+                            for(var i = 0; i < tempSensorsList.length; i++) {
+                                var deviceCreationTime = tempSensorsList[i].creationTime;
+                                var splittedSensorsList = deviceCreationTime.split("T");
+
+                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+
+                                var year = date.substring(0, 4);
+                                var month = date.substring(4, 6);
+                                var day = date.substring(6, 8);
+
+                                var t_time = time.substring(0, 2);
+                                var minutes = time.substring(2, 4);
+                                var seconds = time.substring(4, 6);
+
+                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+
+                                var updateDateMoment = moment(updateDate);
+
+                                var currentDate = new Date();
+                                var ISOData = currentDate.toISOString();
+                                var currentDateMoment = ISOData.substring(0, 19);
+                                //currentDateMoment = moment(currentDateMoment);
+
+                                currentDateMoment = moment('2018-12-18T01:01:56');
+
+                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                if(timeDiff <= 10000) {
+                                    sensors30mDiff.push(tempSensorsList[i]);
+                                }
+                            }
+
+                            drawingTable (sensors30mDiff);
+                            drawingChart ("time_interval_slt_30m", 135 - sensors30mDiff.length, sensors30mDiff.length);
                         }
                     }
                 });
@@ -418,18 +519,15 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="table-wrapper-scroll-y">
-                                <table id="loraSensorsTable" class="table table-bordered table-striped">
-                                    <thead class="black white-text">
-                                        <tr>
-                                            <th scope="col"  align="center">#</th>
-                                            <th scope="col"  align="center"> Device ID </th>
-                                            <th scope="col"  align="center"> Device Creation Time </th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                            <table id="loraSensorsTable" class="table table-bordered table-striped display" style="width:100%">
+                                <thead class="black white-text">
+                                    <tr>
+                                        <th scope="col"  align="center">#</th>
+                                        <th scope="col"  align="center"> Device ID </th>
+                                        <th scope="col"  align="center"> Device Creation Time </th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>

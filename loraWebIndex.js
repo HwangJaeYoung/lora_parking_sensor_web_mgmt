@@ -7,9 +7,9 @@ var ejs = require('ejs');
 var http = require('http');
 var async = require('async');
 var express = require('express');
+var nodemailer = require('nodemailer');
 var bodyParser = require('body-parser');
 var requestToServer = require('request');
-var nodemailer = require('nodemailer');
 
 require('date-utils');
 require('dotenv').config();
@@ -46,7 +46,9 @@ var retreiveExecutionForStatus = function (containerName, loraStatusArray, callB
             var root = oneM2MResponse.body;
             var contentInstance = root['m2m:cin'];
             var creationTime = contentInstance['ct'];
-            console.log(containerName + " : " + creationTime);
+            // console.log(containerName + " : " + creationTime);
+
+            console.log(creationTime);
 
             var loraSensorName = containerName;
 
@@ -78,12 +80,14 @@ var retreiveExecutionForInfo = function (containerName, loraStatusArray, callBac
             var root = oneM2MResponse.body;
             var contentInstance = root['m2m:cin'];
             var creationTime = contentInstance['ct'];
-            console.log(containerName + " : " + creationTime);
+            //console.log(containerName + " : " + creationTime);
+
+            console.log(creationTime);
 
             var loraSensorName = containerName;
 
             var tempJSONObject = new Object();
-            tempJSONObject.deviceName = loraSensorName;
+            tempJSONObject.devicFeName = loraSensorName;
             tempJSONObject.creationTime = creationTime;
             loraStatusArray.push(tempJSONObject);
 
