@@ -34,6 +34,10 @@
         <!-- Moments.js -->
         <script src="moment/moment.js"></script>
 
+        <!-- DataTable.js -->
+        <script src="DataTables/datatables.js"></script>
+        <link rel="stylesheet" href="DataTables/datatables.css">
+
         <script type="text/javascript">
             // backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
             // hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
@@ -55,6 +59,14 @@
                     }
                 });
             });
+
+            $(document).ready(function() {
+                $('#loraSensorsTable').DataTable( {
+                    scrollY:        '55vh',
+                    scrollCollapse: true,
+                    paging:         false
+                } );
+            } );
         </script>
 
         <script type="text/javascript">
@@ -190,7 +202,7 @@
                         drawingChart ("time_interval_slt_all", loraSensorsList.length, 0);
 
                         var updateTime = moment().format("kk:mm:ss, MMMM, Do YYYY");
-                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime;
+                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime + " (Click the Device ID for more information)";
 
                     }, error: function (xhr, textStatus, errorThrown) {
                         alert(textStatus + ' : ' + errorThrown);
@@ -200,41 +212,54 @@
 
             drawingTable = function (param_loraSensorsList) {
 
-                var deviceElementTbody = $("<tbody>");
+                // var deviceElementTbody = $("<tbody>");
 
-                 for (var i = 0; i < param_loraSensorsList.length; i++) {
+                //  for (var i = 0; i < param_loraSensorsList.length; i++) {
+                //
+                //
+                //     var deviceElement = $("<tr>");
+                //
+                //     // device number
+                //     var deviceNumberTD = $('<td>');
+                //     deviceNumberTD.attr({
+                //         "class": "col-xs-1"
+                //     });
+                //     deviceNumberTD.html(i + 1);
+                //
+                //     // device ID
+                //     var deviceIdTD = $('<td>');
+                //     deviceIdTD.attr({
+                //         "class": "col-xs-4"
+                //     });
+                //     deviceIdTD.html(deviceId);
+                //
+                //     // device creation time
+                //     var deviceCreationTimeTD = $('<td>');
+                //     deviceCreationTimeTD.attr({
+                //         "class": "col-xs-4"
+                //     });
+                //     deviceCreationTimeTD.html(deviceCreationTime);
+                //
+                //     deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
+                //
+                //     $( "#loraSensorsTable tbody" ).append(deviceElement);
+                // }
+                //
+                // $("#loraSensorsTable").DataTable();
+
+                var loraSensorsTable = $('#loraSensorsTable').DataTable();
+
+                for(var i = 0; i < param_loraSensorsList.length; i++) {
+                    var rowArray = [];
                     var deviceId = param_loraSensorsList[i].deviceName;
                     var deviceCreationTime = param_loraSensorsList[i].creationTime;
 
-                    var deviceElement = $("<tr>");
-
-                    // device number
-                    var deviceNumberTD = $('<td>');
-                    deviceNumberTD.attr({
-                        "class": "col-xs-1"
-                    });
-                    deviceNumberTD.html(i + 1);
-
-                    // device ID
-                    var deviceIdTD = $('<td>');
-                    deviceIdTD.attr({
-                        "class": "col-xs-4"
-                    });
-                    deviceIdTD.html(deviceId);
-
-                    // device creation time
-                    var deviceCreationTimeTD = $('<td>');
-                    deviceCreationTimeTD.attr({
-                        "class": "col-xs-4"
-                    });
-                    deviceCreationTimeTD.html(deviceCreationTime);
-
-                    deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                    deviceElementTbody.append(deviceElement);
+                    rowArray.push("" + (i + 1));
+                    rowArray.push(deviceId);
+                    rowArray.push(deviceCreationTime);
+                    loraSensorsTable.row.add(rowArray);
                 }
-
-                var paramListRoot = $('#loraSensorsTable');
-                paramListRoot.append(deviceElementTbody);
+                loraSensorsTable.draw();
             };
 
             drawingChart = function (listName, sensors_origin, sensors_diff_min) {
@@ -527,6 +552,9 @@
                                         <th scope="col"  align="center"> Device Creation Time </th>
                                     </tr>
                                 </thead>
+                                <tbody>
+
+                                </tbody>
                             </table>
                         </div>
                     </div>

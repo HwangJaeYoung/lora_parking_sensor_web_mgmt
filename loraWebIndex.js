@@ -212,6 +212,7 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 // Server start
 http.createServer(loraWebIndex).listen(62590, function () {
 
+    // // Check the LoRa IPE status
     // var heartBeat = setInterval(function() {
     //     var targetURL = "http://localhost:7591/loraipe";
     //
@@ -246,7 +247,7 @@ http.createServer(loraWebIndex).listen(62590, function () {
     //             var currentTime = newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
     //
     //             var mailOptions = {
-    //                 from: 'forest62590@gmail.com',
+    //                 from: 'forest625907@gmail.com',
     //                 to: maillist,
     //                 subject: 'LoRa IPE was terminated by unknown errors',
     //                 html: '<p>LoRa IPE was terminated at </p>' + '<p>' + currentTime + '</p>'
@@ -261,7 +262,7 @@ http.createServer(loraWebIndex).listen(62590, function () {
     //             });
     //         }
     //     });
-    // }, 60000);
+    // }, 10000);
 
     console.log('Server running port at ' + 'http://127.0.0.1:62590');
 });
