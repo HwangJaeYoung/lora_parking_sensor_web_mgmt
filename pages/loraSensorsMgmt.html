@@ -64,7 +64,7 @@
                 $('#loraSensorsTable').DataTable( {
                     scrollY:        '55vh',
                     scrollCollapse: true,
-                    paging:         false
+                    paging:         true
                 } );
             } );
         </script>
@@ -202,7 +202,7 @@
                         drawingChart ("time_interval_slt_all", loraSensorsList.length, 0);
 
                         var updateTime = moment().format("kk:mm:ss, MMMM, Do YYYY");
-                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime + " (Click the Device ID for more information)";
+                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime;
 
                     }, error: function (xhr, textStatus, errorThrown) {
                         alert(textStatus + ' : ' + errorThrown);
@@ -249,16 +249,35 @@
 
                 var loraSensorsTable = $('#loraSensorsTable').DataTable();
 
+                loraSensorsTable.clear();
+
                 for(var i = 0; i < param_loraSensorsList.length; i++) {
                     var rowArray = [];
                     var deviceId = param_loraSensorsList[i].deviceName;
                     var deviceCreationTime = param_loraSensorsList[i].creationTime;
+                    var parkingStatus = param_loraSensorsList[i].parkingStatus;
+
+                    var splittedSensorsList = deviceCreationTime.split("T");
+
+                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
+
+                    var year = date.substring(0, 4);
+                    var month = date.substring(4, 6);
+                    var day = date.substring(6, 8);
+
+                    var t_time = time.substring(0, 2);
+                    var minutes = time.substring(2, 4);
+                    var seconds = time.substring(4, 6);
+
+                    var deviceCreationTime = year + "-" + month + "-" + day + ", " + t_time + ":" + minutes + ":" + seconds;
 
                     rowArray.push("" + (i + 1));
                     rowArray.push(deviceId);
+                    rowArray.push(parkingStatus);
                     rowArray.push(deviceCreationTime);
                     loraSensorsTable.row.add(rowArray);
                 }
+
                 loraSensorsTable.draw();
             };
 
@@ -273,7 +292,7 @@
                     datasets_bg_color = ["#F7464A"];
                     datasets_bg_color_hover = ["#FF5A5E"];
                 } else if (listName == "time_interval_slt_10m") {
-                    labels = ["All sensors", "~10min"];
+                    labels = ["Others", "~10min"];
 
                     datasets_data.push(sensors_origin);
                     datasets_data.push(sensors_diff_min);
@@ -282,7 +301,7 @@
                     datasets_bg_color_hover = ["#FF5A5E", "#5AD3D1"];
 
                 } else if (listName == "time_interval_slt_20m") {
-                    labels = ["All sensors", "~20min"];
+                    labels = ["Others", "~20min"];
 
                     datasets_data.push(sensors_origin);
                     datasets_data.push(sensors_diff_min);
@@ -291,7 +310,7 @@
                     datasets_bg_color_hover = ["#FF5A5E", "#FFC870"];
 
                 } else if (listName == "time_interval_slt_30m") {
-                    labels = ["All sensors", "~30min"];
+                    labels = ["Others", "~30min"];
 
                     datasets_data.push(sensors_origin);
                     datasets_data.push(sensors_diff_min);
@@ -458,6 +477,15 @@
                         }
                     }
                 });
+
+                $(document).ready(function() {
+                    var table = $('#loraSensorsTable').DataTable();
+
+                    $('#loraSensorsTable tbody').on('click', 'tr', function () {
+                        var data = table.row( this ).data();
+                        alert( 'You clicked on '+data[0]+'\'s row' );
+                    } );
+                } );
             });
         </script>
     </head>
@@ -549,11 +577,11 @@
                                     <tr>
                                         <th scope="col"  align="center">#</th>
                                         <th scope="col"  align="center"> Device ID </th>
+                                        <th scope="col"  align="center"> Free/Occupied </th>
                                         <th scope="col"  align="center"> Device Creation Time </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                 </tbody>
                             </table>
                         </div>

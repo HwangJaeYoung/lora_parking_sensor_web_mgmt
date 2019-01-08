@@ -46,56 +46,22 @@ var retreiveExecutionForStatus = function (containerName, loraStatusArray, callB
             var root = oneM2MResponse.body;
             var contentInstance = root['m2m:cin'];
             var creationTime = contentInstance['ct'];
-            // console.log(containerName + " : " + creationTime);
+            var parksingStatus = contentInstance['con'];
 
-            console.log(creationTime);
+            console.log(containerName + " : " + creationTime);
 
             var loraSensorName = containerName;
 
             var tempJSONObject = new Object();
             tempJSONObject.deviceName = loraSensorName;
             tempJSONObject.creationTime = creationTime;
+            tempJSONObject.parkingStatus = parksingStatus;
             loraStatusArray.push(tempJSONObject);
 
             callBackResponse(oneM2MResponse.statusCode);
         }
     });
 };
-
-var retreiveExecutionForInfo = function (containerName, loraStatusArray, callBackResponse) {
-
-    var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
-
-    requestToAnotherServer({
-        url: targetURL,
-        method: 'GET',
-        json: true,
-        headers: { // Basic AE resource structure for registration
-            'Accept': 'application/json',
-            'X-M2M-RI': '12345',
-            'X-M2M-Origin': 'Origin',
-        }
-    }, function (error, oneM2MResponse, body) {
-        if(typeof(oneM2MResponse) !== 'undefined') {
-            var root = oneM2MResponse.body;
-            var contentInstance = root['m2m:cin'];
-            var creationTime = contentInstance['ct'];
-            //console.log(containerName + " : " + creationTime);
-
-            console.log(creationTime);
-
-            var loraSensorName = containerName;
-
-            var tempJSONObject = new Object();
-            tempJSONObject.devicFeName = loraSensorName;
-            tempJSONObject.creationTime = creationTime;
-            loraStatusArray.push(tempJSONObject);
-
-            callBackResponse(oneM2MResponse.statusCode);
-        }
-    });
-};
-
 
 // Collecting the LoRa Sensors status
 loraWebIndex.get('/localLoraSensorsStatusCollector', function (request, response) {
