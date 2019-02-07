@@ -1,97 +1,145 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title> KETI LoRa device manager </title>
+        <title> KETI LoRa device manager </title>
 
-    <!-- Bootstrap CSS CDN -->
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="styleMgmtPage.css">
+        <!-- Bootstrap CSS CDN -->
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <!-- Our Custom CSS -->
+        <link rel="stylesheet" href="styleMgmtPage.css">
 
-    <!-- Scrollbar Custom CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+        <!-- Scrollbar Custom CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
-    <!-- Font Awesome JS -->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <!-- Font Awesome JS -->
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
 
-    <!-- Setting the JQuery & JQuery-UI -->
-    <script src="jquery.js"></script>
+        <!-- Setting the JQuery & JQuery-UI -->
+        <script src="jquery.js"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="js/bootstrap.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="js/bootstrap.js"></script>
 
-    <!-- jQuery Custom Scroller CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+        <!-- jQuery Custom Scroller CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#sidebar").mCustomScrollbar({
-                theme: "minimal"
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#sidebar").mCustomScrollbar({
+                    theme: "minimal"
+                });
+
+                $('#sidebarCollapse').on('click', function () {
+                    $('#sidebar, #content').toggleClass('active');
+                    $('.collapse.in').toggleClass('in');
+                    $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+                });
             });
+        </script>
+    </head>
 
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar, #content').toggleClass('active');
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
-        });
-    </script>
-</head>
+    <body>
+        <div class="wrapper">
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
+                </div>
 
-<body>
-<div class="wrapper">
-    <!-- Sidebar  -->
-    <nav id="sidebar">
-        <div class="sidebar-header">
-            <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
-        </div>
+                <ul class="side_list list-unstyled components">
+                    <li>
+                        <a href="http://localhost:62590/loraWebHome">Home</a>
+                    </li>
+                    <li>
+                        <a href="loraPoC.html">PoC Architecture</a>
+                    </li>
+                    <li>
+                        <a href="loraSensorsMgmt.html">Sensors</a>
+                    </li>
+                    <li>
+                        <a href="loraIPEsMgmt.html">IPEs</a>
+                    </li>
+                    <li>
+                        <a href="loraParkingMonitoring.html">Parking Monitoring</a>
+                    </li>
+                    <li>
+                        <a href="loraAbout.html">About</a>
+                    </li>
+                    <li>
+                        <a href="loraWebContactUS.html">Contact US</a>
+                    </li>
+                </ul>
 
-        <ul class="side_list list-unstyled components">
-            <li>
-                <a href="http://localhost:62590/loraWebHome">Home</a>
-            </li>
-            <li>
-                <a href="loraSensorsMgmt.html">Sensors</a>
-            </li>
-            <li>
-                <a href="loraIPEsMgmt.html">IPEs</a>
-            </li>
-            <li>
-                <a href="loraPoC.html">PoC Architecture</a>
-            </li>
-            <li>
-                <a href="loraAbout.html">About</a>
-            </li>
-            <li>
-                <a href="loraWebContactUS.html">Contact US</a>
-            </li>
-        </ul>
-
-        <div class="logo_image_div" style="height:60px;width:240px">
-            <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
-            <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
-        </div>
-    </nav>
-
-    <!-- Page Content  -->
-    <div class="container">
-        <div id="content">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="collapse navbar-collapse">
-                    <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
-                        <i class="fas fa-align-left"></i>
-                        <span> Toggle Sidebar </span>
-                    </button>
+                <div class="logo_image_div" style="height:60px;width:240px">
+                    <image class="logo_image sync_city_image" src="logo_sync_city.png" style="width:100%; height:100%"></image>
+                    <image class="logo_image" src="logo_keti.png" style="width:100%; height:100%"></image>
                 </div>
             </nav>
+
+            <!-- Page Content  -->
+            <div class="container">
+                <div id="content">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="collapse navbar-collapse">
+                            <button type="button" id="sidebarCollapse" class="btn btn-info btn-space">
+                                <i class="fas fa-align-left"></i>
+                                <span> Toggle Sidebar </span>
+                            </button>
+                        </div>
+                    </nav>
+
+                    <div class="row">
+
+                        <object data="drawing.pdf" type="application/pdf" width="100%" height="500px">
+                            <p>It appears you don't have a PDF plugin for this browser.
+                                No biggie... you can <a href="resume.pdf">click here to
+                                    download the PDF file.</a></p>
+                        </object>
+
+                        <div class="table-wrapper-scroll-y">
+                            <table id="loraSensorsTable" class="table table table-bordered table-striped">
+                                <thead class="black white-text">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col"> IPE Name </th>
+                                        <th scope="col"> IPE Status </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="col">1</th>
+                                        <th scope="col"> KerLink Gateway </th>
+                                        <th scope="col"> On </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="col">2</th>
+                                        <th scope="col"> KerLink IPE </th>
+                                        <th scope="col"> On </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="col">3</th>
+                                        <th scope="col"> TTN Gateway </th>
+                                        <th scope="col"> On </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="col">4</th>
+                                        <th scope="col"> TTN IPE </th>
+                                        <th scope="col"> On </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

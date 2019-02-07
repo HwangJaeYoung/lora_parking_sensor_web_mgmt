@@ -58,7 +58,7 @@
                             options = {};
                         }
                         if (typeof message === 'undefined') {
-                            message = 'Loading...';
+                            message = 'Checking...';
                         }
                         var settings = $.extend({
                             dialogSize: 'm',
@@ -103,59 +103,32 @@
                 });
             });
 
-            $(document).on('click', '#getKerlinkLoRaIPEStatus', function() {
+            $(document).on('click', '#getKerLinkIPEStatus', function() {
 
                 waitingDialog.show();
 
                 $.ajax({
-                    url: 'http://localhost:62590/localLoraSensorsCollector',
+                    url: 'http://localhost:62590/loraKerlinkStatus',
                     type: "get",
                     cache: false,
-                    timeout: 30000,
+                    timeout: 5000,
                     contentType: "application/json",
                     success: function (data) {
-                        var loraSensorsList = data['loraSensorsList'];
+                        var parsed_data = JSON.parse(data);
+                        status = parsed_data.status;
+                        console.log(parsed_data.status);
+                        if (status == 200)
+                            $("#ipeStatus table td:eq(2)").html("On");
 
-                        for (var i = 0; i < loraSensorsList.length; i++) {
-
-                            var deviceId = loraSensorsList[i].deviceName;
-                            var deviceCreationTime = loraSensorsList[i].creationTime;
-
-                            var deviceElement = $("<tr>")
-
-                            // device number
-                            var deviceNumberTD = $('<td>');
-                            deviceNumberTD.attr({
-                                "class": "col-xs-1"
-                            });
-                            deviceNumberTD.html(i + 1);
-
-                            // device ID
-                            var deviceIdTD = $('<td>');
-                            deviceIdTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            deviceIdTD.html(deviceId);
-
-                            // device creation time
-                            var deviceCreationTimeTD = $('<td>');
-                            deviceCreationTimeTD.attr({
-                                "class": "col-xs-4"
-                            });
-                            deviceCreationTimeTD.html(deviceCreationTime);
-
-                            deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                            var paramListRoot = $('#loraSensorsTable');
-                            paramListRoot.append(deviceElement);
-
-                            waitingDialog.hide();
-                        }
+                        waitingDialog.hide();
                     }, error: function (xhr, textStatus, errorThrown) {
-                        alert(textStatus + ' : ' + errorThrown);
+                        if (textStatus == 'timeout')
+                            $("#ipeStatus table td:eq(2)").html("terminated");
+
+                        waitingDialog.hide();
                     }
                 });
             });
-
         </script>
     </head>
 
@@ -172,13 +145,16 @@
                         <a href="http://localhost:62590/loraWebHome">Home</a>
                     </li>
                     <li>
+                        <a href="loraPoC.html">PoC Architecture</a>
+                    </li>
+                    <li>
                         <a href="loraSensorsMgmt.html">Sensors</a>
                     </li>
                     <li>
                         <a href="loraIPEsMgmt.html">IPEs</a>
                     </li>
                     <li>
-                        <a href="loraPoC.html">PoC Architecture</a>
+                        <a href="loraParkingMonitoring.html">Parking Monitoring</a>
                     </li>
                     <li>
                         <a href="loraAbout.html">About</a>
@@ -204,11 +180,11 @@
                                 <span> Toggle Sidebar </span>
                             </button>
 
-                            <button type="button" id="getLoRaStatus" class="btn btn-success btn-space">
+                            <button type="button" id="getKerLinkIPEStatus" class="btn btn-success btn-space">
                                 <span> Get KerLink LoRa IPE Status </span>
                             </button>
 
-                            <button type="button" id="getLoRaInfo" class="btn btn-warning btn-space">
+                            <button type="button" id="getTTNIPEStatus" class="btn btn-warning btn-space">
                                 <span> Get TTN LoRa IPE Status </span>
                             </button>
                         </div>
@@ -216,13 +192,23 @@
 
                     <h2> LoRa Interworking Proxy Entity status </h2>
 
-                    <div class="table-wrapper-scroll-y">
+                    <div id="ipeStatus" class="table-wrapper-scroll-y">
                         <table id="loraSensorsTable" class="table table table-bordered table-striped">
                             <thead class="black white-text">
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col"> IPE Name </th>
                                     <th scope="col"> IPE Status </th>
+                                </tr>
+                                <tr>
+                                    <td scope="col">1</td>
+                                    <td scope="col"> KerLink IPE </td>
+                                    <td class="sub" scope="col"> - </td>
+                                </tr>
+                                <tr>
+                                    <td scope="col">2</td>
+                                    <td scope="col"> TTN IPE </td>
+                                    <td class="sub" scope="col"> - </td>
                                 </tr>
                             </thead>
                         </table>

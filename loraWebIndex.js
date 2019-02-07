@@ -143,6 +143,56 @@ loraWebIndex.get('/localLoraSensorsInfoCollector', function (request, response) 
     );
 });
 
+loraWebIndex.get('/loraKerlinkStatus', function (request, response) {
+
+    var targetURL = "http://localhost:7591/loraipe";
+
+    requestToAnotherServer({
+        url: targetURL,
+        method: 'GET',
+        json: true,
+    }, function (error, oneM2MResponse, body) {
+        if(typeof(oneM2MResponse) !== 'undefined') {
+            response.status(200).send('{"success" : "Updated Successfully", "status" : 200}');
+        }
+    });
+});
+
+loraWebIndex.get('/loraTTNStatus', function (request, response) {
+
+    var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
+
+    requestToAnotherServer({
+        url: targetURL,
+        method: 'GET',
+        json: true,
+        headers: { // Basic AE resource structure for registration
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'Origin',
+        }
+    }, function (error, oneM2MResponse, body) {
+        if(typeof(oneM2MResponse) !== 'undefined') {
+            var root = oneM2MResponse.body;
+            var contentInstance = root['m2m:cin'];
+            var creationTime = contentInstance['ct'];
+            var parksingStatus = contentInstance['con'];
+
+            console.log(containerName + " : " + creationTime);
+
+            var loraSensorName = containerName;
+
+            var tempJSONObject = new Object();
+            tempJSONObject.deviceName = loraSensorName;
+            tempJSONObject.creationTime = creationTime;
+            tempJSONObject.parkingStatus = parksingStatus;
+            loraStatusArray.push(tempJSONObject);
+
+            callBackResponse(oneM2MResponse.statusCode);
+        }
+    });
+});
+
 loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
