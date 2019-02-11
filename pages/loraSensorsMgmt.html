@@ -67,6 +67,34 @@
                     paging:         true
                 } );
             } );
+
+            $(function () {
+                //doughnut
+                var ctxD = document.getElementById("doughnutChart_for_uplink").getContext('2d');
+                var myLineChart_for_uplink = new Chart(ctxD, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["Default"],
+                        datasets: [{
+                            data: [135],
+                            backgroundColor: ["#4D5360"],
+                            hoverBackgroundColor: ["#616774"]
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            });
+
+            $(document).ready(function() {
+                $('#loraSensorsTable_for_uplink').DataTable( {
+                    scrollY:        '55vh',
+                    scrollCollapse: true,
+                    paging:         true
+                } );
+            } );
+
         </script>
 
         <script type="text/javascript">
@@ -494,8 +522,8 @@
         <div class="wrapper">
             <!-- Sidebar  -->
             <nav id="sidebar">
-                <div class="sidebar-header">
-                    <h3 align="center"> LoRa parking sensors mgmt Tool </h3>
+                <div align="center" class="sidebar-header">
+                    <img src="logo_parking.png" align="center" width="100px" height="100px">
                 </div>
 
                 <ul class="side_list list-unstyled components">
@@ -581,8 +609,47 @@
                                         <th scope="col"  align="center">#</th>
                                         <th scope="col"  align="center"> Device ID </th>
                                         <th scope="col"  align="center"> Free/Occupied </th>
-                                        <th scope="col"  align="center"> Device Creation Time </th>
+                                        <th scope="col"  align="center"> Creation Time </th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4" id="chartParentDiv_for_uplink">
+                            <!-- Status Chart -->
+                            <canvas id="doughnutChart_for_uplink"></canvas>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="container dropdown_menu_btn">
+                                <div class="btn-group">
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary dropdown-toggle btn-primary" type="button" id="time_interval_dropdown_button_for_uplink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Set Time Interval<span class="caret"></span></button>
+
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul_for_uplink">
+                                            <li role="presentation" id="time_interval_slt_all_for_uplink"><a role="menuitem" href="#">All</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_10m_for_uplink"><a role="menuitem" href="#">~10min</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_20m_for_uplink"><a role="menuitem" href="#">~20min</a></li>
+                                            <li role="presentation" class="divider"></li>
+                                            <li role="presentation" id="time_interval_slt_30m_for_uplink"><a role="menuitem" href="#">~30min</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <table id="loraSensorsTable_for_uplink" class="table table-bordered table-striped display" style="width:100%">
+                                <thead class="black white-text">
+                                <tr>
+                                    <th scope="col"  align="center">#</th>
+                                    <th scope="col"  align="center"> Device ID </th>
+                                    <th scope="col"  align="center"> Free/Occupied </th>
+                                    <th scope="col"  align="center"> Device Creation Time </th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
