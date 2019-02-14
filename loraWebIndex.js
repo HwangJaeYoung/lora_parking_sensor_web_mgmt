@@ -4,6 +4,7 @@
 
 var fs = require('fs');
 var ejs = require('ejs');
+var xlsx = require('xlsx');
 var http = require('http');
 var async = require('async');
 var express = require('express');
@@ -63,12 +64,10 @@ var retreiveExecutionForStatus = function (containerName, loraStatusArray, callB
     });
 };
 
+// Getting the lora Uplink status
 var retreiveExecutionForStatus_for_uplink = function (containerName, loraStatusArray, callBackResponse) {
 
-    // Read the excel sheet for getting the parking sensor device ID
-
-    
-    var targetURL = "http://203.253.128.161:7579/Mobius/9999991000000057/parkingSpot/" + containerName + "/status" + "/la";
+    var targetURL = "http://203.253.128.161:7579/Mobius/9999991000000057/" + containerName  + "/up/la";
 
     requestToAnotherServer({
         url: targetURL,
@@ -81,20 +80,39 @@ var retreiveExecutionForStatus_for_uplink = function (containerName, loraStatusA
         }
     }, function (error, oneM2MResponse, body) {
         if(typeof(oneM2MResponse) !== 'undefined') {
-            var root = oneM2MResponse.body;
-            var contentInstance = root['m2m:cin'];
-            var creationTime = contentInstance['ct'];
-            var parksingStatus = contentInstance['con'];
-
-            console.log(containerName + " : " + creationTime);
-
-            var loraSensorName = containerName;
-
             var tempJSONObject = new Object();
-            tempJSONObject.deviceName = loraSensorName;
-            tempJSONObject.creationTime = creationTime;
-            tempJSONObject.parkingStatus = parksingStatus;
-            loraStatusArray.push(tempJSONObject);
+
+            if(oneM2MResponse.statusCode == 200) {
+                var root = oneM2MResponse.body;
+                var contentInstance = root['m2m:cin'];
+                var creationTime = contentInstance['ct'];
+                var parksingStatus = contentInstance['con'];
+
+                console.log(containerName + " : " + creationTime);
+
+                var loraSensorName = containerName;
+
+                tempJSONObject.deviceEUI = loraSensorName;
+
+                if(creationTime != null)
+                    tempJSONObject.creationTime = creationTime;
+                else
+                    tempJSONObject.creationTime = '-';
+
+                if(parksingStatus != null)
+                    tempJSONObject.parkingStatus = parksingStatus;
+                else
+                    tempJSONObject.parkingStatus = '-';
+
+                loraStatusArray.push(tempJSONObject);
+            } else if(oneM2MResponse.statusCode == 404) {
+                var loraSensorName = containerName;
+
+                tempJSONObject.deviceEUI = loraSensorName;
+                tempJSONObject.creationTime = '-';
+                tempJSONObject.parkingStatus = '-';
+                loraStatusArray.push(tempJSONObject);
+            }
 
             callBackResponse(oneM2MResponse.statusCode);
         }
@@ -144,41 +162,46 @@ loraWebIndex.get('/localLoraSensorsStatusCollector', function (request, response
 // Collecting the LoRa Sensors status
 loraWebIndex.get('/localLoraSensorsStatusCollectorForUplink', function (request, response) {
 
-    var loraStatusArray = new Array();
-    var iterationCount = 1;
+    // Read the sensor_list sheet for getting the parking sensor device ID
+    fs.readFile('sensor_list/lora_parking_text.txt', 'utf-8', function (err, data) {
+        if (err) {
+            console.log("FATAL An error occurred trying to read in the file: " + err);
+        } else {
+            var loraSensorIDArray = data.split("\n");
 
-    async.whilst(
-        function() {
-            return iterationCount < 136 //136
-        },
+            var loraStatusArray = new Array();
+            var iterationCount = 1;
 
-        function (async_for_loop_callback) {
-            var containerName;
+            async.whilst(
+                function() {
+                    return iterationCount < 136 //136
+                },
 
-            if(iterationCount < 10) {
-                containerName = "KETI00" + iterationCount;
-            } else if (iterationCount < 100) {
-                containerName = "KETI0" + iterationCount;
-            } else {
-                containerName = "KETI" + iterationCount;
-            }
+                function (async_for_loop_callback) {
+                    var containerName;
+                    containerName = loraSensorIDArray[iterationCount - 1];
 
-            retreiveExecutionForStatus(containerName, loraStatusArray, function (statusCode) {
-                if(statusCode == 200) {
-                    iterationCount++;
-                    async_for_loop_callback (null, iterationCount);
-                } else {
-                    console.log("This condition is going to be covered later");
+                    retreiveExecutionForStatus_for_uplink(containerName, loraStatusArray, function (statusCode) {
+                        if(statusCode == 200) {
+                            iterationCount++;
+                            async_for_loop_callback (null, iterationCount);
+                        } else if (statusCode == 404) {
+                            iterationCount++;
+                            async_for_loop_callback (null, iterationCount);
+                        } else {
+                            console.log("This condition is going to be covered later");
+                        }
+                    });
+                },
+
+                function (err, n) {
+                    var loraSensorJSONObject = new Object();
+                    loraSensorJSONObject.loraSensorsList = loraStatusArray;
+                    response.status(200).send(loraSensorJSONObject);
                 }
-            });
-        },
-
-        function (err, n) {
-            var loraSensorJSONObject = new Object();
-            loraSensorJSONObject.loraSensorsList = loraStatusArray;
-            response.status(200).send(loraSensorJSONObject);
+            );
         }
-    );
+    });
 });
 
 // Collecting the LoRa Sensors info
@@ -221,6 +244,7 @@ loraWebIndex.get('/localLoraSensorsInfoCollector', function (request, response) 
     );
 });
 
+// Getting the lora Kerlink IPE status
 loraWebIndex.get('/loraKerlinkStatus', function (request, response) {
 
     var targetURL = "http://localhost:7591/loraipe";
@@ -236,6 +260,7 @@ loraWebIndex.get('/loraKerlinkStatus', function (request, response) {
     });
 });
 
+// Getting the lora TTN IPE status
 loraWebIndex.get('/loraTTNStatus', function (request, response) {
 
     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
@@ -271,6 +296,7 @@ loraWebIndex.get('/loraTTNStatus', function (request, response) {
     });
 });
 
+// E-mail function test
 loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',

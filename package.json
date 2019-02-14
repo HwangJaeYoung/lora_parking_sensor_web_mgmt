@@ -15,7 +15,8 @@
     "mysql": "^2.11.1",
     "nodemailer": "^4.7.0",
     "request": "^2.72.0",
-    "tui-grid": "^3.3.0"
+    "tui-grid": "^3.3.0",
+    "xlsx": "^0.14.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

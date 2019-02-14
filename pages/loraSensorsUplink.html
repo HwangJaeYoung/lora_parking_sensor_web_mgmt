@@ -43,8 +43,8 @@
             // hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
             $(function () {
                 //doughnut
-                var ctxD = document.getElementById("doughnutChart").getContext('2d');
-                var myLineChart = new Chart(ctxD, {
+                var ctxD = document.getElementById("doughnutChart_for_uplink").getContext('2d');
+                var myLineChart_for_uplink = new Chart(ctxD, {
                     type: 'doughnut',
                     data: {
                         labels: ["Default"],
@@ -61,7 +61,7 @@
             });
 
             $(document).ready(function() {
-                $('#loraSensorsTable').DataTable( {
+                $('#loraSensorsTable_for_uplink').DataTable( {
                     scrollY:        '55vh',
                     scrollCollapse: true,
                     paging:         true
@@ -151,26 +151,29 @@
                 });
             });
 
-            $(document).on('click', '#getLoRaStatus', function() {
+            $(document).on('click', '#getLoRaStatus_for_uplink', function() {
 
                 waitingDialog.show();
 
                 $.ajax({
-                    url: 'http://localhost:62590/localLoraSensorsStatusCollector',
+                    url: 'http://localhost:62590/localLoraSensorsStatusCollectorForUplink',
                     type: "get",
                     cache: false,
                     timeout: 30000,
                     contentType: "application/json",
                     success: function (data) {
+
+                        console.log(data);
+
                         loraSensorsList = data['loraSensorsList'];
                         gettingTheLoRaInfo = true;
 
                         waitingDialog.hide();
                         drawingTable(loraSensorsList);
-                        drawingChart ("time_interval_slt_all", loraSensorsList.length, 0);
+                        drawingChart ("time_interval_slt_all_for_uplink", loraSensorsList.length, 0);
 
                         var updateTime = moment().format("kk:mm:ss, MMMM, Do YYYY");
-                        document.getElementById("updateTime").innerHTML = "Update Time: " + updateTime;
+                        document.getElementById("updateTime_for_uplink").innerHTML = "Update Time: " + updateTime;
 
                     }, error: function (xhr, textStatus, errorThrown) {
                         alert(textStatus + ' : ' + errorThrown);
@@ -180,64 +183,40 @@
 
             drawingTable = function (param_loraSensorsList) {
 
-                // var deviceElementTbody = $("<tbody>");
-
-                //  for (var i = 0; i < param_loraSensorsList.length; i++) {
-                //
-                //
-                //     var deviceElement = $("<tr>");
-                //
-                //     // device number
-                //     var deviceNumberTD = $('<td>');
-                //     deviceNumberTD.attr({
-                //         "class": "col-xs-1"
-                //     });
-                //     deviceNumberTD.html(i + 1);
-                //
-                //     // device ID
-                //     var deviceIdTD = $('<td>');
-                //     deviceIdTD.attr({
-                //         "class": "col-xs-4"
-                //     });
-                //     deviceIdTD.html(deviceId);
-                //
-                //     // device creation time
-                //     var deviceCreationTimeTD = $('<td>');
-                //     deviceCreationTimeTD.attr({
-                //         "class": "col-xs-4"
-                //     });
-                //     deviceCreationTimeTD.html(deviceCreationTime);
-                //
-                //     deviceElement.append(deviceNumberTD).append(deviceIdTD).append(deviceCreationTimeTD);
-                //
-                //     $( "#loraSensorsTable tbody" ).append(deviceElement);
-                // }
-                //
-                // $("#loraSensorsTable").DataTable();
-
-                var loraSensorsTable = $('#loraSensorsTable').DataTable();
+                var loraSensorsTable = $('#loraSensorsTable_for_uplink').DataTable();
 
                 loraSensorsTable.clear();
 
                 for(var i = 0; i < param_loraSensorsList.length; i++) {
                     var rowArray = [];
-                    var deviceId = param_loraSensorsList[i].deviceName;
-                    var deviceCreationTime = param_loraSensorsList[i].creationTime;
-                    var parkingStatus = param_loraSensorsList[i].parkingStatus;
+                    var deviceId = param_loraSensorsList[i].deviceEUI;
+                    var deviceCreationTime = '', parkingStatus = '';
 
-                    var splittedSensorsList = deviceCreationTime.split("T");
+                    // if device creation time exist
+                    if (param_loraSensorsList[i].creationTime != '-') {
+                        deviceCreationTime = param_loraSensorsList[i].creationTime;
 
-                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
+                        var splittedSensorsList = deviceCreationTime.split("T");
 
-                    var year = date.substring(0, 4);
-                    var month = date.substring(4, 6);
-                    var day = date.substring(6, 8);
+                        var date = splittedSensorsList[0], time = splittedSensorsList[1];
 
-                    var t_time = time.substring(0, 2);
-                    var minutes = time.substring(2, 4);
-                    var seconds = time.substring(4, 6);
+                        var year = date.substring(0, 4);
+                        var month = date.substring(4, 6);
+                        var day = date.substring(6, 8);
 
-                    var deviceCreationTime = year + "-" + month + "-" + day + ", " + t_time + ":" + minutes + ":" + seconds;
+                        var t_time = time.substring(0, 2);
+                        var minutes = time.substring(2, 4);
+                        var seconds = time.substring(4, 6);
+
+                        deviceCreationTime = year + "-" + month + "-" + day + ", " + t_time + ":" + minutes + ":" + seconds;
+                    } else {
+                        deviceCreationTime = '-';
+                    }
+
+                    parkingStatus = param_loraSensorsList[i].parkingStatus;
+
+                    if(parkingStatus.length > 16)
+                        parkingStatus = '-'
 
                     rowArray.push("" + (i + 1));
                     rowArray.push(deviceId);
@@ -252,14 +231,14 @@
             drawingChart = function (listName, sensors_origin, sensors_diff_min) {
                 var labels = [], datasets_data = [], datasets_bg_color, datasets_bg_color_hover;
 
-                if(listName == "time_interval_slt_all") {
+                if(listName == "time_interval_slt_all_for_uplink") {
                     labels = ["All sensors"];
 
                     datasets_data.push(sensors_origin);
 
                     datasets_bg_color = ["#F7464A"];
                     datasets_bg_color_hover = ["#FF5A5E"];
-                } else if (listName == "time_interval_slt_10m") {
+                } else if (listName == "time_interval_slt_10m_for_uplink") {
                     labels = ["Others", "~10min"];
 
                     datasets_data.push(sensors_origin);
@@ -268,7 +247,7 @@
                     datasets_bg_color = ["#F7464A", "#46BFBD"];
                     datasets_bg_color_hover = ["#FF5A5E", "#5AD3D1"];
 
-                } else if (listName == "time_interval_slt_20m") {
+                } else if (listName == "time_interval_slt_20m_for_uplink") {
                     labels = ["Others", "~20min"];
 
                     datasets_data.push(sensors_origin);
@@ -277,7 +256,7 @@
                     datasets_bg_color = ["#F7464A", "#FDB45C"];
                     datasets_bg_color_hover = ["#FF5A5E", "#FFC870"];
 
-                } else if (listName == "time_interval_slt_30m") {
+                } else if (listName == "time_interval_slt_30m_for_uplink") {
                     labels = ["Others", "~30min"];
 
                     datasets_data.push(sensors_origin);
@@ -288,14 +267,14 @@
                 }
 
                 // Remove the existing chart
-                var div = document.getElementById("chartParentDiv");
+                var div = document.getElementById("chartParentDiv_for_uplink");
                 div.innerHTML = '';
 
                 $('<canvas/>', {
-                    id: 'doughnutChart'
-                }).appendTo('#chartParentDiv');
+                    id: 'doughnutChart_for_uplink'
+                }).appendTo('#chartParentDiv_for_uplink');
 
-                var ctxD = document.getElementById("doughnutChart").getContext('2d');
+                var ctxD = document.getElementById("doughnutChart_for_uplink").getContext('2d');
                 var myLineChart = new Chart(ctxD, {
                     type: 'doughnut',
                     data: {
@@ -320,12 +299,12 @@
                     } else {
                         const menuId = $(this).attr('id');
 
-                        if (menuId === "time_interval_slt_all") { // All sensors
+                        if (menuId === "time_interval_slt_all_for_uplink") { // All sensors
                             const allSensors = loraSensorsList;
                             drawingTable (allSensors);
-                            drawingChart ("time_interval_slt_all", allSensors.length, 0);
+                            drawingChart ("time_interval_slt_all_for_uplink", allSensors.length, 0);
 
-                        } else if (menuId === "time_interval_slt_10m") { // 10m diff
+                        } else if (menuId === "time_interval_slt_10m_for_uplink") { // 10m diff
                             const tempSensorsList = loraSensorsList;
                             var sensors10mDiff = [];
 
@@ -363,9 +342,9 @@
 
                             console.log(sensors10mDiff.length);
                             drawingTable (sensors10mDiff);
-                            drawingChart ("time_interval_slt_10m", 135 - sensors10mDiff.length, sensors10mDiff.length);
+                            drawingChart ("time_interval_slt_10m_for_uplink", 135 - sensors10mDiff.length, sensors10mDiff.length);
 
-                        } else if (menuId === "time_interval_slt_20m") { // 20min diff
+                        } else if (menuId === "time_interval_slt_20m_for_uplink") { // 20min diff
                             const tempSensorsList = loraSensorsList;
                             var sensors20mDiff = [];
 
@@ -402,9 +381,9 @@
                             }
 
                             drawingTable (sensors20mDiff);
-                            drawingChart ("time_interval_slt_20m", 135 - sensors20mDiff.length, sensors20mDiff.length);
+                            drawingChart ("time_interval_slt_20m_for_uplink", 135 - sensors20mDiff.length, sensors20mDiff.length);
 
-                        } else if (menuId === "time_interval_slt_30m") { // 30min diff
+                        } else if (menuId === "time_interval_slt_30m_for_uplink") { // 30min diff
                             const tempSensorsList = loraSensorsList;
                             var sensors30mDiff = [];
 
@@ -441,7 +420,7 @@
                             }
 
                             drawingTable (sensors30mDiff);
-                            drawingChart ("time_interval_slt_30m", 135 - sensors30mDiff.length, sensors30mDiff.length);
+                            drawingChart ("time_interval_slt_30m_for_uplink", 135 - sensors30mDiff.length, sensors30mDiff.length);
                         }
                     }
                 });
@@ -509,22 +488,22 @@
                                 <span> Toggle Sidebar </span>
                             </button>
 
-                            <button type="button" id="getLoRaStatus" class="btn btn-success btn-space">
-                                <span> Get LoRa device status </span>
+                            <button type="button" id="getLoRaStatus_for_uplink" class="btn btn-success btn-space">
+                                <span> Get LoRa Uplink status </span>
                             </button>
-                            <span id="updateTime"> Update Time:  </span>
+                            <span id="updateTime_for_uplink"> Update Time:  </span>
                             <!--<button type="button" id="getLoRaInfo" class="btn btn-warning btn-space">-->
-                                <!--<span> LoRa Info </span>-->
+                            <!--<span> LoRa Info </span>-->
                             <!--</button>-->
                         </div>
                     </nav>
 
-                    <h2> LoRa sensors status (free/occupied)</h2>
+                    <h2> LoRa sensors status (Uplink) </h2>
 
                     <div class="row">
-                        <div class="col-md-6 mb-4" id="chartParentDiv">
+                        <div class="col-md-6 mb-4" id="chartParentDiv_for_uplink">
                             <!-- Status Chart -->
-                            <canvas id="doughnutChart"></canvas>
+                            <canvas id="doughnutChart_for_uplink"></canvas>
                         </div>
 
                         <div class="col-md-6 mb-4">
@@ -532,27 +511,27 @@
                                 <div class="btn-group">
                                     <div class="btn-group">
                                         <button class="btn btn-secondary dropdown-toggle btn-primary btn-space" type="button" id="time_interval_dropdown_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" > Set Time Interval<span class="caret"></span></button>
-                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul">
-                                            <li role="presentation" id="time_interval_slt_all"><a role="menuitem" href="#">All</a></li>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="time_interval_dropdown_ul_for_uplink">
+                                            <li role="presentation" id="time_interval_slt_all_for_uplink"><a role="menuitem" href="#">All</a></li>
                                             <li role="presentation" class="divider"></li>
-                                            <li role="presentation" id="time_interval_slt_10m"><a role="menuitem" href="#">~10min</a></li>
+                                            <li role="presentation" id="time_interval_slt_10m_for_uplink"><a role="menuitem" href="#">~10min</a></li>
                                             <li role="presentation" class="divider"></li>
-                                            <li role="presentation" id="time_interval_slt_20m"><a role="menuitem" href="#">~20min</a></li>
+                                            <li role="presentation" id="time_interval_slt_20m_for_uplink"><a role="menuitem" href="#">~20min</a></li>
                                             <li role="presentation" class="divider"></li>
-                                            <li role="presentation" id="time_interval_slt_30m"><a role="menuitem" href="#">~30min</a></li>
+                                            <li role="presentation" id="time_interval_slt_30m_for_uplink"><a role="menuitem" href="#">~30min</a></li>
                                         </ul>
 
                                     </div>
                                 </div>
                             </div>
-                            <table id="loraSensorsTable" class="table table-bordered table-striped display" style="width:100%">
+                            <table id="loraSensorsTable_for_uplink" class="table table-bordered table-striped display" style="width:100%">
                                 <thead class="black white-text">
-                                    <tr>
-                                        <th scope="col"  align="center">#</th>
-                                        <th scope="col"  align="center"> Device ID </th>
-                                        <th scope="col"  align="center"> Free/Occupied </th>
-                                        <th scope="col"  align="center"> Creation Time </th>
-                                    </tr>
+                                <tr>
+                                    <th scope="col"  align="center">#</th>
+                                    <th scope="col"  align="center"> Device EUI </th>
+                                    <th scope="col"  align="center"> Free/Occupied </th>
+                                    <th scope="col"  align="center"> Creation Time </th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
