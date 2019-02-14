@@ -162,9 +162,6 @@
                     timeout: 30000,
                     contentType: "application/json",
                     success: function (data) {
-
-                        console.log(data);
-
                         loraSensorsList = data['loraSensorsList'];
                         gettingTheLoRaInfo = true;
 
@@ -292,7 +289,7 @@
             };
 
             $(document).ready(function(){
-                $("#time_interval_dropdown_ul li").click(function() {
+                $("#time_interval_dropdown_ul_for_uplink li").click(function() {
 
                     if (gettingTheLoRaInfo == false) {
                         alert("Please get the LoRa sensors information first!");
@@ -309,38 +306,43 @@
                             var sensors10mDiff = [];
 
                             for(var i = 0; i < tempSensorsList.length; i++) {
+
                                 var deviceCreationTime = tempSensorsList[i].creationTime;
-                                var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+                                if(deviceCreationTime != '-') {
+                                    var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var year = date.substring(0, 4);
-                                var month = date.substring(4, 6);
-                                var day = date.substring(6, 8);
+                                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
 
-                                var t_time = time.substring(0, 2);
-                                var minutes = time.substring(2, 4);
-                                var seconds = time.substring(4, 6);
+                                    var year = date.substring(0, 4);
+                                    var month = date.substring(4, 6);
+                                    var day = date.substring(6, 8);
 
-                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+                                    console.log(time);
 
-                                var updateDateMoment = moment(updateDate);
+                                    var t_time = time.substring(0, 2);
+                                    var minutes = time.substring(2, 4);
+                                    var seconds = time.substring(4, 6);
 
-                                var currentDate = new Date();
-                                var ISOData = currentDate.toISOString();
-                                var currentDateMoment = ISOData.substring(0, 19);
-                                //currentDateMoment = moment(currentDateMoment);
+                                    var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
 
-                                currentDateMoment = moment('2018-12-18T01:01:56');
+                                    var updateDateMoment = moment(updateDate);
 
-                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+                                    var currentDate = new Date();
+                                    var ISOData = currentDate.toISOString();
+                                    var currentDateMoment = ISOData.substring(0, 19);
+                                    //currentDateMoment = moment(currentDateMoment);
 
-                                if(timeDiff <= 7000) {
-                                    sensors10mDiff.push(tempSensorsList[i]);
+                                    currentDateMoment = moment('2018-12-18T01:01:56');
+
+                                    var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                    if(timeDiff <= 7000) {
+                                        sensors10mDiff.push(tempSensorsList[i]);
+                                    }
                                 }
                             }
 
-                            console.log(sensors10mDiff.length);
                             drawingTable (sensors10mDiff);
                             drawingChart ("time_interval_slt_10m_for_uplink", 135 - sensors10mDiff.length, sensors10mDiff.length);
 
@@ -350,33 +352,36 @@
 
                             for(var i = 0; i < tempSensorsList.length; i++) {
                                 var deviceCreationTime = tempSensorsList[i].creationTime;
-                                var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+                                if(deviceCreationTime != '-') {
+                                    var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var year = date.substring(0, 4);
-                                var month = date.substring(4, 6);
-                                var day = date.substring(6, 8);
+                                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
 
-                                var t_time = time.substring(0, 2);
-                                var minutes = time.substring(2, 4);
-                                var seconds = time.substring(4, 6);
+                                    var year = date.substring(0, 4);
+                                    var month = date.substring(4, 6);
+                                    var day = date.substring(6, 8);
 
-                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+                                    var t_time = time.substring(0, 2);
+                                    var minutes = time.substring(2, 4);
+                                    var seconds = time.substring(4, 6);
 
-                                var updateDateMoment = moment(updateDate);
+                                    var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
 
-                                var currentDate = new Date();
-                                var ISOData = currentDate.toISOString();
-                                var currentDateMoment = ISOData.substring(0, 19);
-                                //currentDateMoment = moment(currentDateMoment);
+                                    var updateDateMoment = moment(updateDate);
 
-                                currentDateMoment = moment('2018-12-18T01:01:56');
+                                    var currentDate = new Date();
+                                    var ISOData = currentDate.toISOString();
+                                    var currentDateMoment = ISOData.substring(0, 19);
+                                    //currentDateMoment = moment(currentDateMoment);
 
-                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+                                    currentDateMoment = moment('2018-12-18T01:01:56');
 
-                                if(timeDiff <= 8500) {
-                                    sensors20mDiff.push(tempSensorsList[i]);
+                                    var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                    if (timeDiff <= 8500) {
+                                        sensors20mDiff.push(tempSensorsList[i]);
+                                    }
                                 }
                             }
 
@@ -389,33 +394,36 @@
 
                             for(var i = 0; i < tempSensorsList.length; i++) {
                                 var deviceCreationTime = tempSensorsList[i].creationTime;
-                                var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var date = splittedSensorsList[0], time = splittedSensorsList[1];
+                                if(deviceCreationTime != '-') {
+                                    var splittedSensorsList = deviceCreationTime.split("T");
 
-                                var year = date.substring(0, 4);
-                                var month = date.substring(4, 6);
-                                var day = date.substring(6, 8);
+                                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
 
-                                var t_time = time.substring(0, 2);
-                                var minutes = time.substring(2, 4);
-                                var seconds = time.substring(4, 6);
+                                    var year = date.substring(0, 4);
+                                    var month = date.substring(4, 6);
+                                    var day = date.substring(6, 8);
 
-                                var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
+                                    var t_time = time.substring(0, 2);
+                                    var minutes = time.substring(2, 4);
+                                    var seconds = time.substring(4, 6);
 
-                                var updateDateMoment = moment(updateDate);
+                                    var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
 
-                                var currentDate = new Date();
-                                var ISOData = currentDate.toISOString();
-                                var currentDateMoment = ISOData.substring(0, 19);
-                                //currentDateMoment = moment(currentDateMoment);
+                                    var updateDateMoment = moment(updateDate);
 
-                                currentDateMoment = moment('2018-12-18T01:01:56');
+                                    var currentDate = new Date();
+                                    var ISOData = currentDate.toISOString();
+                                    var currentDateMoment = ISOData.substring(0, 19);
+                                    //currentDateMoment = moment(currentDateMoment);
 
-                                var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+                                    currentDateMoment = moment('2018-12-18T01:01:56');
 
-                                if(timeDiff <= 10000) {
-                                    sensors30mDiff.push(tempSensorsList[i]);
+                                    var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+
+                                    if (timeDiff <= 10000) {
+                                        sensors30mDiff.push(tempSensorsList[i]);
+                                    }
                                 }
                             }
 
@@ -442,13 +450,10 @@
             <!-- Sidebar  -->
             <nav id="sidebar">
                 <div align="center" class="sidebar-header">
-                    <img src="logo_parking.png" align="center" width="100px" height="100px">
+                    <a href="http://localhost:62590/loraWebHome"><img src="logo_parking.png" align="center" width="100px" height="100px"></a>
                 </div>
 
                 <ul class="side_list list-unstyled components">
-                    <li>
-                        <a href="http://localhost:62590/loraWebHome">Home</a>
-                    </li>
                     <li>
                         <a href="loraPoC.html">PoC Architecture</a>
                     </li>
