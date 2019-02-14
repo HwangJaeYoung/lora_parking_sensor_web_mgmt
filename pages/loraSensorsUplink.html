@@ -318,26 +318,26 @@
                                     var month = date.substring(4, 6);
                                     var day = date.substring(6, 8);
 
-                                    console.log(time);
-
                                     var t_time = time.substring(0, 2);
                                     var minutes = time.substring(2, 4);
                                     var seconds = time.substring(4, 6);
 
                                     var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
-
                                     var updateDateMoment = moment(updateDate);
 
                                     var currentDate = new Date();
+                                    currentDate.setHours(currentDate.getHours() + 9);
                                     var ISOData = currentDate.toISOString();
                                     var currentDateMoment = ISOData.substring(0, 19);
-                                    //currentDateMoment = moment(currentDateMoment);
+                                    currentDateMoment = moment(currentDateMoment);
 
-                                    currentDateMoment = moment('2018-12-18T01:01:56');
+                                    // currentDateMoment = moment('2018-12-18T01:01:56');
 
-                                    var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
+                                    var timeDiff = moment.duration(currentDateMoment.diff(updateDateMoment));
 
-                                    if(timeDiff <= 7000) {
+                                    console.log(timeDiff.asMinutes());
+
+                                    if(timeDiff <= 10) {
                                         sensors10mDiff.push(tempSensorsList[i]);
                                     }
                                 }
@@ -367,15 +367,15 @@
                                     var seconds = time.substring(4, 6);
 
                                     var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
-
                                     var updateDateMoment = moment(updateDate);
 
                                     var currentDate = new Date();
+                                    currentDate.setHours(currentDate.getHours() + 9);
                                     var ISOData = currentDate.toISOString();
                                     var currentDateMoment = ISOData.substring(0, 19);
-                                    //currentDateMoment = moment(currentDateMoment);
+                                    currentDateMoment = moment(currentDateMoment);
 
-                                    currentDateMoment = moment('2018-12-18T01:01:56');
+                                    // currentDateMoment = moment('2018-12-18T01:01:56');
 
                                     var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
 
@@ -409,15 +409,15 @@
                                     var seconds = time.substring(4, 6);
 
                                     var updateDate = year + "-" + month + "-" + day + "T" + t_time + ":" + minutes + ":" + seconds;
-
                                     var updateDateMoment = moment(updateDate);
 
                                     var currentDate = new Date();
+                                    currentDate.setHours(currentDate.getHours() + 9);
                                     var ISOData = currentDate.toISOString();
                                     var currentDateMoment = ISOData.substring(0, 19);
-                                    //currentDateMoment = moment(currentDateMoment);
+                                    currentDateMoment = moment(currentDateMoment);
 
-                                    currentDateMoment = moment('2018-12-18T01:01:56');
+                                    // currentDateMoment = moment('2018-12-18T01:01:56');
 
                                     var timeDiff = currentDateMoment.diff(updateDateMoment, 'minutes');
 
