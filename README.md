@@ -10,7 +10,7 @@
   `https://nodejs.org/ko/`
 
 - **Run the lora magt service**
-
+  * Use the `npm install` to get the libraries.
   * Run the loraWebIndex.js by using `node loraWebIndex.js` command.
   * Connect to `http://localhost:62590/loraWebHome`
 
