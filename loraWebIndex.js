@@ -6,6 +6,7 @@ var fs = require('fs');
 var ejs = require('ejs');
 var xlsx = require('xlsx');
 var http = require('http');
+var CORS = require('cors')();
 var async = require('async');
 var express = require('express');
 var nodemailer = require('nodemailer');
@@ -16,6 +17,8 @@ require('date-utils');
 require('dotenv').config();
 
 var loraWebIndex = express();
+
+loraWebIndex.use(CORS);
 loraWebIndex.use(bodyParser.json());
 loraWebIndex.use(bodyParser.urlencoded({extended: false}));
 loraWebIndex.use(express.static('ajax'));
@@ -80,6 +83,7 @@ var retreiveExecutionForStatus_for_uplink = function (containerName, loraStatusA
         }
     }, function (error, oneM2MResponse, body) {
         if(typeof(oneM2MResponse) !== 'undefined') {
+
             var tempJSONObject = new Object();
 
             if(oneM2MResponse.statusCode == 200) {
@@ -182,6 +186,7 @@ loraWebIndex.get('/localLoraSensorsStatusCollectorForUplink', function (request,
                     containerName = loraSensorIDArray[iterationCount - 1];
 
                     retreiveExecutionForStatus_for_uplink(containerName, loraStatusArray, function (statusCode) {
+
                         if(statusCode == 200) {
                             iterationCount++;
                             async_for_loop_callback (null, iterationCount);
