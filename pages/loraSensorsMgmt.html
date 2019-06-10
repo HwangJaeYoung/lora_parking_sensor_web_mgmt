@@ -225,19 +225,24 @@
                     var deviceCreationTime = param_loraSensorsList[i].creationTime;
                     var parkingStatus = param_loraSensorsList[i].parkingStatus;
 
-                    var splittedSensorsList = deviceCreationTime.split("T");
+                    if(param_loraSensorsList[i].creationTime != '-') {
+                        var splittedSensorsList = deviceCreationTime.split("T");
 
-                    var date = splittedSensorsList[0], time = splittedSensorsList[1];
+                        var date = splittedSensorsList[0], time = splittedSensorsList[1];
 
-                    var year = date.substring(0, 4);
-                    var month = date.substring(4, 6);
-                    var day = date.substring(6, 8);
+                        var year = date.substring(0, 4);
+                        var month = date.substring(4, 6);
+                        var day = date.substring(6, 8);
 
-                    var t_time = time.substring(0, 2);
-                    var minutes = time.substring(2, 4);
-                    var seconds = time.substring(4, 6);
+                        var t_time = time.substring(0, 2);
+                        var minutes = time.substring(2, 4);
+                        var seconds = time.substring(4, 6);
 
-                    var deviceCreationTime = year + "-" + month + "-" + day + ", " + t_time + ":" + minutes + ":" + seconds;
+                        deviceCreationTime = year + "-" + month + "-" + day + ", " + t_time + ":" + minutes + ":" + seconds;
+
+                    } else {
+                        deviceCreationTime = '-'
+                    }
 
                     rowArray.push("" + (i + 1));
                     rowArray.push(deviceId);

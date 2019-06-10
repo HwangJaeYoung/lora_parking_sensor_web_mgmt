@@ -47,20 +47,33 @@ var retreiveExecutionForStatus = function (containerName, loraStatusArray, callB
         }
     }, function (error, oneM2MResponse, body) {
         if(typeof(oneM2MResponse) !== 'undefined') {
-            var root = oneM2MResponse.body;
-            var contentInstance = root['m2m:cin'];
-            var creationTime = contentInstance['ct'];
-            var parksingStatus = contentInstance['con'];
 
-            console.log(containerName + " : " + creationTime);
-
-            var loraSensorName = containerName;
+            console.log(oneM2MResponse.statusCode)
 
             var tempJSONObject = new Object();
-            tempJSONObject.deviceName = loraSensorName;
-            tempJSONObject.creationTime = creationTime;
-            tempJSONObject.parkingStatus = parksingStatus;
-            loraStatusArray.push(tempJSONObject);
+
+            if (oneM2MResponse.statusCode == 200) {
+                var root = oneM2MResponse.body;
+                var contentInstance = root['m2m:cin'];
+                var creationTime = contentInstance['ct'];
+                var parksingStatus = contentInstance['con'];
+
+                console.log(containerName + " : " + creationTime);
+
+                var loraSensorName = containerName;
+
+                tempJSONObject.deviceName = loraSensorName;
+                tempJSONObject.creationTime = creationTime;
+                tempJSONObject.parkingStatus = parksingStatus;
+                loraStatusArray.push(tempJSONObject);
+            } else if (oneM2MResponse.statusCode == 404) {
+                var loraSensorName = containerName;
+
+                tempJSONObject.deviceName = loraSensorName;
+                tempJSONObject.creationTime = '-';
+                tempJSONObject.parkingStatus = '-';
+                loraStatusArray.push(tempJSONObject);
+            }
 
             callBackResponse(oneM2MResponse.statusCode);
         }
@@ -147,6 +160,9 @@ loraWebIndex.get('/localLoraSensorsStatusCollector', function (request, response
 
             retreiveExecutionForStatus(containerName, loraStatusArray, function (statusCode) {
                 if(statusCode == 200) {
+                    iterationCount++;
+                    async_for_loop_callback (null, iterationCount);
+                }  else if (statusCode == 404) {
                     iterationCount++;
                     async_for_loop_callback (null, iterationCount);
                 } else {
