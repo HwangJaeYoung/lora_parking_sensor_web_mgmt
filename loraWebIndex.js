@@ -139,7 +139,7 @@ var retrieveComponentsStatus = function (targetServerName, targetURL, callBackRe
     var headers = '';
     var targetURL = targetURL;
 
-    if(targetServerName == 'Mobius') {
+    if(targetServerName == 'MOBIUS') {
         headers = {
             'Accept': 'application/json',
             'X-M2M-RI': '12345',
@@ -148,8 +148,6 @@ var retrieveComponentsStatus = function (targetServerName, targetURL, callBackRe
     } else if(targetServerName == 'TTNIPE' || targetServerName == 'SPNIPE') {
         headers = {
             'Accept': 'application/json',
-            'X-M2M-RI': '12345',
-            'X-M2M-Origin': 'Origin'
         }
     }
 
@@ -161,6 +159,8 @@ var retrieveComponentsStatus = function (targetServerName, targetURL, callBackRe
     }, function (error, response, body) {
         if(typeof(response) !== 'undefined') {
             callBackResponse(response.statusCode);
+        } else { // server errors -> internal server errors
+            callBackResponse(500);
         }
     });
 };
@@ -381,7 +381,7 @@ loraWebIndex.get('/getComponentsStatus', function (request, response) {
         // Check the Mobius status
         function(callback) {
             var mobiusStatus = '';
-            targetServerName = 'Mobius';
+            targetServerName = 'MOBIUS';
             targetURL = 'http://203.253.128.161:7579/Mobius';
 
             retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
@@ -392,50 +392,58 @@ loraWebIndex.get('/getComponentsStatus', function (request, response) {
                 callback(null, mobiusStatus);
             });
         },
-        function(arg1, callback) {
 
-            var targetStatus_1 = arg1;
+        // Check the SPN IPE status
+        function(targetStatus_1, callback) {
 
-            var mobiusStatus = '';
-            targetServerName = 'Mobius';
-            targetURL = 'http://203.253.128.161:7579/Mobius';
+            var targetStatus_1 = targetStatus_1;
+
+            // Following information has to be changed as SPN IPE info.
+            var SpnStatus = '';
+            targetServerName = 'SPNIPE';
+            targetURL = 'http://localhost:7579/Mobius';
 
             retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
-                mobiusStatus = targetStatus;
+                SpnStatus = targetStatus;
 
                 console.log("======== check-2 ========");
-                console.log(targetStatus_1, mobiusStatus);
+                console.log(targetStatus_1, SpnStatus);
 
-                callback(null, targetStatus_1, mobiusStatus);
+                callback(null, targetStatus_1, SpnStatus);
             });
         },
-        function(arg1, arg2, callback) {
-            var targetStatus_1 = arg1;
-            var targetStatus_2 = arg2;
 
-            var mobiusStatus = '';
-            targetServerName = 'Mobius';
-            targetURL = 'http://203.253.128.161:7579/Mobius';
+        // Check the TTN IPE status
+        function(targetStatus_1, targetStatus_2, callback) {
+            var targetStatus_1 = targetStatus_1;
+            var targetStatus_2 = targetStatus_2;
+
+            // Following information has to be changed as TTN IPE info.
+            var TtnStatus = '';
+            targetServerName = 'TTNIPE';
+            targetURL = 'http://localhost:7579/Mobius';
 
             retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
-                mobiusStatus = targetStatus;
-                console.log("======== check-3 ========");
-                console.log(targetStatus_1, targetStatus_2, mobiusStatus);
+                TtnStatus = targetStatus;
 
-                callback(null, targetStatus_1, targetStatus_2, mobiusStatus);
+                console.log("======== check-3 ========");
+                console.log(targetStatus_1, targetStatus_2, TtnStatus);
+
+                callback(null, targetStatus_1, targetStatus_2, TtnStatus);
             });
         }
     ], function (err, targetStatus_1, targetStatus_2, targetStatus_3) {
+        if (err) {
+            console.log('error')
+        } else {
+            var resultJSONObject = new Object();
+            resultJSONObject.targetStatus_1 = targetStatus_1;
+            resultJSONObject.targetStatus_2 = targetStatus_2;
+            resultJSONObject.targetStatus_3 = targetStatus_3;
 
-
-        var tempJSONObject = new Object();
-        tempJSONObject.targetStatus_1 = targetStatus_1;
-        tempJSONObject.targetStatus_2 = targetStatus_2;
-        tempJSONObject.targetStatus_3 = targetStatus_3;
-
-        response.status(200).send(tempJSONObject);
+            response.status(200).send(resultJSONObject);
+        }
     });
-
 });
 
 // Connecting the oneM2M Web Tester page.

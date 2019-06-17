@@ -56,20 +56,37 @@
                         timeout: 12000,
                         contentType: "application/json",
                         success: function (data) {
-
-                            console.log(data.targetStatus_1)
                             var mobiusStatus = data.targetStatus_1;
+                            var SpnIpeStatus = data.targetStatus_2;
+                            var TtnIpeStatus = data.targetStatus_3;
 
-                            $("#componentsTable table td:eq(2)").html(mobiusStatus);
-                            $("#componentsTable table td:eq(5)").html(mobiusStatus);
-                            $("#componentsTable table td:eq(8)").html(mobiusStatus);
+                            if(mobiusStatus == 200)
+                                mobiusStatus = "Running";
+                            else
+                                mobiusStatus = "Terminated";
+
+                            if(SpnIpeStatus == 200)
+                                SpnIpeStatus = "Running";
+                            else
+                                SpnIpeStatus = "Terminated";
+
+                            if (TtnIpeStatus == 200)
+                                TtnIpeStatus = "Running";
+                            else
+                                TtnIpeStatus = "Terminated";
+
+                            $("#componentsTable table td:eq(2)").html(mobiusStatus); // targetStatus_1
+                            $("#componentsTable table td:eq(5)").html(SpnIpeStatus); // targetStatus_2
+                            $("#componentsTable table td:eq(8)").html(TtnIpeStatus); // targetStatus_3
 
                             $this.button('reset');
 
                         }, error: function (xhr, textStatus, errorThrown) {
-                            if (textStatus == 'timeout')
-                                $("#componentsTable table td:eq(2)").html("terminated");
-
+                            if (textStatus == 'timeout') {
+                                $("#componentsTable table td:eq(2)").html('error'); // targetStatus_1
+                                $("#componentsTable table td:eq(5)").html('error'); // targetStatus_2
+                                $("#componentsTable table td:eq(8)").html('error'); // targetStatus_3
+                            }
                             $this.button('reset');
                         }
                     });
@@ -146,20 +163,20 @@
 
                                     <tr>
                                         <td scope="col">1</td>
-                                        <td scope="col"> SPN Interworking Proxy Entity </td>
-                                        <td class="sub" scope="col"> off </td>
+                                        <td scope="col"> Mobius Server Platform </td>
+                                        <td class="sub" scope="col"> --- </td>
                                     </tr>
 
                                     <tr>
                                         <td scope="col">2</td>
-                                        <td scope="col"> TTN Interworking Proxy Entity </td>
-                                        <td class="sub" scope="col"> off </td>
+                                        <td scope="col"> SPN Interworking Proxy Entity </td>
+                                        <td class="sub" scope="col"> --- </td>
                                     </tr>
 
                                     <tr>
                                         <td scope="col">3</td>
-                                        <td scope="col"> Mobius Server Platform </td>
-                                        <td class="sub" scope="col"> off </td>
+                                        <td scope="col"> TTN Interworking Proxy Entity </td>
+                                        <td class="sub" scope="col"> --- </td>
                                     </tr>
                                 </thead>
                             </table>
