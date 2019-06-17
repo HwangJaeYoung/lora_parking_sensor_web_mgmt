@@ -343,6 +343,25 @@ loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
     });
 });
 
+// functions for the loraPoc.html ==================================
+loraWebIndex.get('getSpnIpeStatus', function (request, response) {
+
+
+
+};
+
+loraWebIndex.get('getTtnIpeStatus', function (request, response) {
+
+
+
+};
+
+loraWebIndex.get('getMobiusStatus', function (request, response) {
+
+
+
+};
+
 // Connecting the oneM2M Web Tester page.
 loraWebIndex.get('/loraWebHome', function (request, response) {
     fs.readFile('loraWebHome.ejs', 'utf-8', function (error, data) {
