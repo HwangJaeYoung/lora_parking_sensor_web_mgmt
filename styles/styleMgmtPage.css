@@ -235,3 +235,10 @@ td,th {
 .poc_img_margin {
     margin-bottom: 20px;
 }
+
+.about_img_center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

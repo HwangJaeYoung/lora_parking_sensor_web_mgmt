@@ -30,13 +30,11 @@ loraWebIndex.use(express.static('styles'));
 loraWebIndex.use(express.static('images'));
 loraWebIndex.use(express.static('MDBChartLib'));
 
-var requestToAnotherServer = require('request');
-
 var retreiveExecutionForStatus = function (containerName, loraStatusArray, callBackResponse) {
 
     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
 
-    requestToAnotherServer({
+    requestToServer({
         url: targetURL,
         method: 'GET',
         json: true,
@@ -85,7 +83,7 @@ var retreiveExecutionForStatus_for_uplink = function (containerName, loraStatusA
 
     var targetURL = "http://203.253.128.161:7579/Mobius/9999991000000057/" + containerName  + "/up/la";
 
-    requestToAnotherServer({
+    requestToServer({
         url: targetURL,
         method: 'GET',
         json: true,
@@ -132,6 +130,37 @@ var retreiveExecutionForStatus_for_uplink = function (containerName, loraStatusA
             }
 
             callBackResponse(oneM2MResponse.statusCode);
+        }
+    });
+};
+
+var retrieveComponentsStatus = function (targetServerName, targetURL, callBackResponse) {
+
+    var headers = '';
+    var targetURL = targetURL;
+
+    if(targetServerName == 'Mobius') {
+        headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'Origin'
+        }
+    } else if(targetServerName == 'TTNIPE' || targetServerName == 'SPNIPE') {
+        headers = {
+            'Accept': 'application/json',
+            'X-M2M-RI': '12345',
+            'X-M2M-Origin': 'Origin'
+        }
+    }
+
+    requestToServer({
+        url: targetURL,
+        method: 'GET',
+        json: true,
+        headers: headers
+    }, function (error, response, body) {
+        if(typeof(response) !== 'undefined') {
+            callBackResponse(response.statusCode);
         }
     });
 };
@@ -194,7 +223,7 @@ loraWebIndex.get('/localLoraSensorsStatusCollectorForUplink', function (request,
 
             async.whilst(
                 function() {
-                    return iterationCount < 136 //136
+                    return iterationCount < 133 // 133
                 },
 
                 function (async_for_loop_callback) {
@@ -233,7 +262,7 @@ loraWebIndex.get('/localLoraSensorsInfoCollector', function (request, response) 
 
     async.whilst(
         function() {
-            return iterationCount < 136 //136
+            return iterationCount < 133 //133
         },
 
         function (async_for_loop_callback) {
@@ -270,7 +299,7 @@ loraWebIndex.get('/loraKerlinkStatus', function (request, response) {
 
     var targetURL = "http://localhost:7591/loraipe";
 
-    requestToAnotherServer({
+    requestToServer({
         url: targetURL,
         method: 'GET',
         json: true,
@@ -286,7 +315,7 @@ loraWebIndex.get('/loraTTNStatus', function (request, response) {
 
     var targetURL = "http://203.253.128.161:7579/Mobius/iotParking/parkingSpot/" + containerName + "/status" + "/la";
 
-    requestToAnotherServer({
+    requestToServer({
         url: targetURL,
         method: 'GET',
         json: true,
@@ -317,6 +346,7 @@ loraWebIndex.get('/loraTTNStatus', function (request, response) {
     });
 });
 
+
 // E-mail function test
 loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
     var transporter = nodemailer.createTransport({
@@ -344,23 +374,69 @@ loraWebIndex.get('/loraEmailSendingTest', function (request, response) {
 });
 
 // functions for the loraPoc.html ==================================
-loraWebIndex.get('getSpnIpeStatus', function (request, response) {
+loraWebIndex.get('/getComponentsStatus', function (request, response) {
+
+    async.waterfall([
+
+        // Check the Mobius status
+        function(callback) {
+            var mobiusStatus = '';
+            targetServerName = 'Mobius';
+            targetURL = 'http://203.253.128.161:7579/Mobius';
+
+            retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
+                mobiusStatus = targetStatus;
+                console.log("======== check-1 ========");
+                console.log(mobiusStatus);
+
+                callback(null, mobiusStatus);
+            });
+        },
+        function(arg1, callback) {
+
+            var targetStatus_1 = arg1;
+
+            var mobiusStatus = '';
+            targetServerName = 'Mobius';
+            targetURL = 'http://203.253.128.161:7579/Mobius';
+
+            retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
+                mobiusStatus = targetStatus;
+
+                console.log("======== check-2 ========");
+                console.log(targetStatus_1, mobiusStatus);
+
+                callback(null, targetStatus_1, mobiusStatus);
+            });
+        },
+        function(arg1, arg2, callback) {
+            var targetStatus_1 = arg1;
+            var targetStatus_2 = arg2;
+
+            var mobiusStatus = '';
+            targetServerName = 'Mobius';
+            targetURL = 'http://203.253.128.161:7579/Mobius';
+
+            retrieveComponentsStatus (targetServerName, targetURL, function (targetStatus) {
+                mobiusStatus = targetStatus;
+                console.log("======== check-3 ========");
+                console.log(targetStatus_1, targetStatus_2, mobiusStatus);
+
+                callback(null, targetStatus_1, targetStatus_2, mobiusStatus);
+            });
+        }
+    ], function (err, targetStatus_1, targetStatus_2, targetStatus_3) {
 
 
+        var tempJSONObject = new Object();
+        tempJSONObject.targetStatus_1 = targetStatus_1;
+        tempJSONObject.targetStatus_2 = targetStatus_2;
+        tempJSONObject.targetStatus_3 = targetStatus_3;
 
-};
+        response.status(200).send(tempJSONObject);
+    });
 
-loraWebIndex.get('getTtnIpeStatus', function (request, response) {
-
-
-
-};
-
-loraWebIndex.get('getMobiusStatus', function (request, response) {
-
-
-
-};
+});
 
 // Connecting the oneM2M Web Tester page.
 loraWebIndex.get('/loraWebHome', function (request, response) {
@@ -372,11 +448,11 @@ loraWebIndex.get('/loraWebHome', function (request, response) {
 // Server start
 http.createServer(loraWebIndex).listen(62590, function () {
 
-    // // Check the LoRa IPE status
+    // // Check the LoRa IPE status + e-mail sending functionality
     // var heartBeat = setInterval(function() {
     //     var targetURL = "http://localhost:7591/loraipe";
     //
-    //     requestToAnotherServer({
+    //     requestToServer({
     //         url: targetURL,
     //         method: 'GET',
     //         json: true,

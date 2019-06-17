@@ -41,6 +41,40 @@
                     $('a[aria-expanded=true]').attr('aria-expanded', 'false');
                 });
             });
+
+            <!-- Check components status button -->
+            $(document).ready(function () {
+                $('#load_progress').on('click', function() {
+
+                    var $this = $(this);
+                    $this.button('loading');
+
+                    $.ajax({
+                        url: 'http://localhost:62590/getComponentsStatus',
+                        type: "get",
+                        cache: false,
+                        timeout: 12000,
+                        contentType: "application/json",
+                        success: function (data) {
+
+                            console.log(data.targetStatus_1)
+                            var mobiusStatus = data.targetStatus_1;
+
+                            $("#componentsTable table td:eq(2)").html(mobiusStatus);
+                            $("#componentsTable table td:eq(5)").html(mobiusStatus);
+                            $("#componentsTable table td:eq(8)").html(mobiusStatus);
+
+                            $this.button('reset');
+
+                        }, error: function (xhr, textStatus, errorThrown) {
+                            if (textStatus == 'timeout')
+                                $("#componentsTable table td:eq(2)").html("terminated");
+
+                            $this.button('reset');
+                        }
+                    });
+                });
+            });
         </script>
     </head>
 
@@ -101,34 +135,38 @@
                     </div>
 
                     <div class="row">
-                        <div class="table-wrapper-scroll-y">
-                            <table id="loraSensorsTable" class="table table table-bordered table-striped">
+                        <div id="componentsTable" class="table-wrapper-scroll-y">
+                            <table class="table table table-bordered table-striped">
                                 <thead class="black white-text">
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col"> Component name </th>
+                                        <th scope="col"> Component Name </th>
                                         <th scope="col"> Status </th>
                                     </tr>
 
                                     <tr>
-                                        <th scope="col">1</th>
-                                        <th scope="col"> SPN IPE </th>
-                                        <th scope="col"> off </th>
+                                        <td scope="col">1</td>
+                                        <td scope="col"> SPN Interworking Proxy Entity </td>
+                                        <td class="sub" scope="col"> off </td>
                                     </tr>
 
                                     <tr>
-                                        <th scope="col">2</th>
-                                        <th scope="col"> TTN IPE </th>
-                                        <th scope="col"> off </th>
+                                        <td scope="col">2</td>
+                                        <td scope="col"> TTN Interworking Proxy Entity </td>
+                                        <td class="sub" scope="col"> off </td>
                                     </tr>
 
                                     <tr>
-                                        <th scope="col">3</th>
-                                        <th scope="col"> Mobius </th>
-                                        <th scope="col"> off </th>
+                                        <td scope="col">3</td>
+                                        <td scope="col"> Mobius Server Platform </td>
+                                        <td class="sub" scope="col"> off </td>
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
+
+                        <div>
+                            <button type="button" class="btn-success btn-lg pull-right" id="load_progress" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Processing Order">Check components status</button>
                         </div>
                     </div>
                 </div>
