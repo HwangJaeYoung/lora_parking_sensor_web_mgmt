@@ -508,5 +508,5 @@ http.createServer(loraWebIndex).listen(62590, function () {
     //     });
     // }, 10000);
 
-    console.log('Server running port at ' + 'http://127.0.0.1:62590');
+    console.log('Server running port at ' + 'http://127.0.0.1:62590/lorawebhome');
 });
