@@ -19,7 +19,7 @@
     "request": "^2.72.0",
     "save": "^2.3.3",
     "tui-grid": "^3.7.0",
-    "xlsx": "^0.14.1"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
