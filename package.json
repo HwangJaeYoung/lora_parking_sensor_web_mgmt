@@ -4,7 +4,7 @@
   "description": "",
   "main": "loraWebIndex.js",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "body-parser": "^1.15.1",
     "bootstrap-waitingfor": "^1.2.7",
     "cors": "^2.8.5",
