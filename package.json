@@ -12,7 +12,7 @@
     "dotenv": "^6.2.0",
     "ejs": "^2.4.2",
     "express": "^4.13.4",
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.23",
     "mysql": "^2.11.1",
     "nodemailer": "^4.7.0",
